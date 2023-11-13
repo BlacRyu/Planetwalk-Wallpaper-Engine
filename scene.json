@@ -1,0 +1,617 @@
+{
+	"camera" : 
+	{
+		"center" : "0.00000 0.00000 -1.00000",
+		"eye" : "0.00000 0.00000 0.00000",
+		"up" : "0.00000 1.00000 0.00000"
+	},
+	"general" : 
+	{
+		"ambientcolor" : "0.30000 0.30000 0.30000",
+		"bloom" : false,
+		"bloomhdrfeather" : 0.1,
+		"bloomhdriterations" : 8,
+		"bloomhdrscatter" : 1.619,
+		"bloomhdrstrength" : 2.0,
+		"bloomhdrthreshold" : 1.0,
+		"bloomstrength" : 2.0,
+		"bloomthreshold" : 0.64999998,
+		"camerafade" : true,
+		"cameraparallax" : false,
+		"cameraparallaxamount" : 0.0099999998,
+		"cameraparallaxdelay" : 0.1,
+		"cameraparallaxmouseinfluence" : 1.0,
+		"camerapreview" : true,
+		"camerashake" : false,
+		"camerashakeamplitude" : 0.5,
+		"camerashakeroughness" : 1.0,
+		"camerashakespeed" : 3.0,
+		"clearcolor" : "0.70000 0.70000 0.70000",
+		"clearenabled" : true,
+		"farz" : 10000.0,
+		"fov" : 50.0,
+		"hdr" : false,
+		"nearz" : 0.0099999998,
+		"orthogonalprojection" : 
+		{
+			"height" : 2160,
+			"width" : 3840
+		},
+		"skylightcolor" : "0.30000 0.30000 0.30000",
+		"zoom" : 1.0
+	},
+	"objects" : 
+	[
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 7,
+			"image" : "models/util/solidlayer.json",
+			"locktransforms" : true,
+			"name" : "OMGHelpers (shared script module)",
+			"origin" : "-5.50000 0.00000 0.00000",
+			"scale" : "0.00000 0.00000 0.00000",
+			"size" : "512.00000 512.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"script" : "'use strict';\n\nexport var scriptProperties = createScriptProperties()\n\t.addColor({\n\t\tname: 'debugText_FlashColor',\n\t\tlabel: 'Debug Flash Color',\n\t\tvalue: new Vec3(0.5, 1.0, 1.0)\n\t})\n\t.finish();\n\nlet bEnableDebugText = true;\nlet debugText_Layers = [];\n// let debugText_FlashColor = new Vec3(0.5, 1.0, 1.0);\nlet debugText_Color = new Vec3(1.0, 1.0, 1.0);\nlet debugText_ShowBackground = true;\nlet debugText_BackgroundColor = new Vec3(0.1, 0.1, 0.1);\nlet debugText_Size = 5;\nlet debugText_Alpha = 0.75;\nlet debugText_FlashScale = 1.01;\n/** How many milliseconds to fade from the flash color to the normal color when the text is updated. */\nlet debugText_FlashTime = 250;\n/** How many milliseconds to display the text before starting to fade out. */\nlet debugText_DisplayTime = 500;\n/** How many milliseconds to fade out the debug text before removing it. */\nlet debugText_FadeTime = 1500;\n\n\nlet _canvasToScreen = 1.0;\n\n\nexport function update() {\n\tlet currentTime = new Date().getTime();\n\tlet linesDisplayed = 0;\n\t\n\tdebugText_Layers.forEach(\n\t\tfunction(textLayer, index, array) {\n\t\t\tlet displayTime = textLayer.displayTime || debugText_DisplayTime;\n\t\t\tif (currentTime > textLayer.lastUpdated + (displayTime + debugText_FadeTime)) {\n\t\t\t\ttextLayer.alpha = 0;\n\t\t\t\tthisScene.destroyLayer(textLayer);\n\t\t\t\tarray.splice(index, 1);\n\t\t\t\treturn;\n\t\t\t}\n\t\t\telse if (currentTime > textLayer.lastUpdated + displayTime) {\n\t\t\t\ttextLayer.color = debugText_Color;\n\t\t\t\tlet fadeLerp = (currentTime - (textLayer.lastUpdated + displayTime)) / debugText_FadeTime;\n\t\t\t\ttextLayer.alpha = OMGHelpers.lerp(debugText_Alpha, 0, fadeLerp);\n\t\t\t}\n\t\t\telse {\n\t\t\t\tlet flashLerp = OMGHelpers.clamp((currentTime - textLayer.lastChanged) / debugText_FlashTime);\n\t\t\t\ttextLayer.color = OMGHelpers.lerp(scriptProperties.debugText_FlashColor, debugText_Color, flashLerp);\n\t\t\t\ttextLayer.scale = new Vec3(OMGHelpers.lerp(debugText_FlashScale * _canvasToScreen, 1 * _canvasToScreen, flashLerp));\n\t\t\t\ttextLayer.alpha = debugText_Alpha;\n\t\t\t}\n\n\t\t\tif (engine.canvasSize.x !== 0) {\n\t\t\t\tlet cornerY = engine.canvasSize.y;\n\t\t\t\tlet cornerX = 0;\n\t\t\t\tlet screenAspectRatio = engine.screenResolution.x / engine.screenResolution.y;\n\t\t\t\tlet canvasAspectRatio = engine.canvasSize.x / engine.canvasSize.y;\n\t\t\t\tif (screenAspectRatio > canvasAspectRatio) {\n\t\t\t\t\tcornerY = engine.screenResolution.y * engine.canvasSize.x / engine.screenResolution.x;\n\t\t\t\t\tcornerY += (engine.canvasSize.y - cornerY) / 2;\n\t\t\t\t}\n\t\t\t\telse {\n\t\t\t\t\tcornerX = engine.screenResolution.x * engine.canvasSize.y / engine.screenResolution.y;\n\t\t\t\t\tcornerX = (engine.canvasSize.x - cornerX) / 2;\n\t\t\t\t}\n\t\t\t\ttextLayer.origin = new Vec3(cornerX, cornerY - linesDisplayed * (debugText_Size * 4.9 - 0.5) * _canvasToScreen, 0);\n\t\t\t}\n\t\t\telse { // 3D Scene\n\t\t\t\tlet aspectRatio = engine.screenResolution.x / engine.screenResolution.y;\n\t\t\t\tlet ct = thisScene.getCameraTransforms();\n\t\t\t\tlet forward = ct.center.subtract(ct.eye).normalize();\n\t\t\t\tlet up = ct.up;\n\t\t\t\tlet right = forward.cross(up);\n\t\t\t\tlet pos = ct.eye.add(forward).add(up.multiply(0.45)).add(right.multiply(-0.45 * aspectRatio));\n\t\t\t\tpos.y -= linesDisplayed * (debugText_Size * .002);\n\t\t\t\ttextLayer.origin = new Vec3(pos.x, pos.y, pos.z);\n\t\t\t\ttextLayer.scale = new Vec3(0.0005);\n\t\t\t}\n\t\t\ttextLayer.pointsize = debugText_Size;\n\t\t\ttextLayer.visible = bEnableDebugText;\n\t\t\tlinesDisplayed += textLayer.text.split('\\n').length;\n\t\t}\n\t);\n}\n\n\nexport function init() {\n\t_canvasToScreen = Math.min(engine.canvasSize.x / engine.screenResolution.x, engine.canvasSize.y / engine.screenResolution.y);\n}\n\n\nexport function resizeScreen() {\n\t_canvasToScreen = Math.min(engine.canvasSize.x / engine.screenResolution.x, engine.canvasSize.y / engine.screenResolution.y);\n}\n\n\n\n\nclass OMGHelpers {\n\t/** Prints all key/value pairs present on the object to the console. */\n\tstatic printObjectValues(obj){\n\t\tif (typeof(obj) !== 'object' || obj === null)\n\t\t\treturn;\n\n\t\tfor (const key of Object.keys(obj))\n\t\t\tconsole.log(key + \" - \" + obj[key]);\n\t}\n\n\t/** Attempts to add two values together. */\n\tstatic add(v1, v2) {\n\t\tif (!v2)\n\t\t\treturn v1;\n\t\telse if (typeof v1 === 'number' || typeof v1 === 'string')\n\t\t\treturn v1 + v2;\n\t\telse if (v1.add)\n\t\t\treturn v1.add(v2);\n\t\telse\n\t\t\treturn undefined;\n\t}\n\n\t/** Attempts to subtract the second value from the first value. */\n\tstatic subtract(v1, v2) {\n\t\tif (!v2)\n\t\t\treturn v1;\n\t\telse if (typeof v1 === 'number' || typeof v1 === 'string')\n\t\t\treturn v1 - v2;\n\t\telse if (v1.subtract)\n\t\t\treturn v1.subtract(v2);\n\t\telse\n\t\t\treturn undefined;\n\t}\n\n\t/** Attempts to multiply two values together. */\n\tstatic multiply(v1, v2) {\n\t\tif (v2 === undefined)\n\t\t\treturn undefined;\n\t\telse if (typeof v1 === 'number' || typeof v1 === 'string')\n\t\t\treturn v1 * v2;\n\t\telse if (v1.multiply)\n\t\t\treturn v1.multiply(v2);\n\t\telse\n\t\t\treturn undefined;\n\t}\n\n\t/** Attempts to divide the first value by the second value. */\n\tstatic divide(v1, v2) {\n\t\tif (!v2)\n\t\t\treturn undefined;\n\t\telse if (typeof v1 === 'number' || typeof v1 === 'string')\n\t\t\treturn v1 * v2;\n\t\telse if (v1.multiply)\n\t\t\treturn v1.multiply(v2);\n\t\telse\n\t\t\treturn undefined;\n\t}\n\n\t/**\n\t * True if the two parameters are the same type and contain equal values, otherwise false\n\t * @param [epsilon] {number} The minimum difference allowed between number values before they are considered non-equal (helps avoid some floating-point issues)\n\t * @return {boolean}\n\t */\n\tstatic equal(v1, v2, epsilon = 0.0001){\n\t\tif (v1 instanceof Vec3) {\n\t\t\tif (v2 instanceof Vec3)\n\t\t\t\treturn (Math.abs(v1.x - v2.x) < epsilon && Math.abs(v1.y - v2.y) < epsilon && Math.abs(v1.z - v1.z) < epsilon);\n\t\t\telse\n\t\t\t\treturn false;\n\t\t}\n\t\telse if (v1 instanceof Vec2) {\n\t\t\tif (v2 instanceof Vec2)\n\t\t\t\treturn (Math.abs(v1.x - v2.x) < epsilon && Math.abs(v1.y - v2.y) < epsilon);\n\t\t\telse\n\t\t\t\treturn false;\n\t\t}\n\t\telse switch (typeof v1) {\n\t\tcase \"number\":\n\t\t\tif (typeof v2 === \"number\")\n\t\t\t\treturn (Math.abs(v1 - v2) < epsilon);\n\t\t\telse\n\t\t\t\treturn false;\n\t\t\tbreak;\n\t\tdefault:\n\t\t\treturn (v1 === v2);\n\t\t}\n\t}\n\n\t/** Restricts a value to remain between two boundary values. \n\t * @param {number} val - The value to be restricted.\n\t * @param {number} min - The lower bound.\n\t * @param {number} max - The upper bound.\n\t*/\n\tstatic clamp(val, min = 0, max = 1) {\n\t\tif (typeof(val) === \"number\")\n\t\t\treturn Math.min(max, Math.max(min, val));\n\t\telse if (val instanceof Vec2) {\n\t\t\tlet x = Math.min(max.x, Math.max(min.x, val.x));\n\t\t\tlet y = Math.min(max.y, Math.max(min.y, val.y));\n\t\t\treturn new Vec2(x, y);\n\t\t}\n\t\telse if (val instanceof Vec3) {\n\t\t\tlet x = Math.min(max.x, Math.max(min.x, val.x));\n\t\t\tlet y = Math.min(max.y, Math.max(min.y, val.y));\n\t\t\tlet z = Math.min(max.z, Math.max(min.z, val.z));\n\t\t\treturn new Vec3(x, y, z);\n\t\t}\n\t\telse if (val instanceof Vec4) {\n\t\t\tlet x = Math.min(max.x, Math.max(min.x, val.x));\n\t\t\tlet y = Math.min(max.y, Math.max(min.y, val.y));\n\t\t\tlet z = Math.min(max.z, Math.max(min.z, val.z));\n\t\t\tlet w = Math.min(max.w, Math.max(min.w, val.w));\n\t\t\treturn new Vec4(x, y, z, w);\n\t\t}\n\t}\n\n\t/** Interpolate linearly from the first value to the second based on the third (0 to 1) */\n\tstatic lerp(v1, v2, percent) {\n\t\tif (typeof(v1) === \"number\")\n\t\t\treturn v1 + (v2 - v1) * percent;\n\t\telse if (v1 instanceof Vec2) {\n\t\t\tlet x = v1.x + (v2.x - v1.x) * percent;\n\t\t\tlet y = v1.y + (v2.y - v1.y) * percent;\n\t\t\treturn new Vec2(x, y);\n\t\t}\n\t\telse if (v1 instanceof Vec3) {\n\t\t\tlet x = v1.x + (v2.x - v1.x) * percent;\n\t\t\tlet y = v1.y + (v2.y - v1.y) * percent;\n\t\t\tlet z = v1.z + (v2.z - v1.z) * percent;\n\t\t\treturn new Vec3(x, y, z);\n\t\t}\n\t\telse if (v1 instanceof Vec4) {\n\t\t\tlet x = v1.x + (v2.x - v1.x) * percent;\n\t\t\tlet y = v1.y + (v2.y - v1.y) * percent;\n\t\t\tlet z = v1.z + (v2.z - v1.z) * percent;\n\t\t\tlet w = v1.w + (v2.w - v1.w) * percent;\n\t\t\treturn new Vec4(x, y, z, w);\n\t\t}\n\t\telse\n\t\t\treturn undefined;\n\t}\n\n\t/** Prints a stack trace to the console. */\n\tstatic stackTrace() {\n\t\treturn console.log(new Error().stack);\n\t}\n\t\n\t/** Creates or updates a text layer in the corner of the screen. \n\t * @param {string} text - The text that the layer should display.\n\t * @param {string} name - The name of the text layer to create or update.\n\t * @param {number} displayTime - How many milliseconds the message should be displayed for.\n\t*/\n\tstatic debugText(text, name = \"_defaultLayerName\", displayTime = 5000) {\n\t\tif (bEnableDebugText && name !== undefined && text !== undefined) {\n\t\t\tlet layer = thisScene.getLayer(name.toString() + \"_debugText\");\n\t\t\tif (layer) {\n\t\t\t\tif (layer.text != text) {\n\t\t\t\t\tlayer.text = text;\n\t\t\t\t\tlayer.lastChanged = layer.lastUpdated = new Date().getTime();\n\t\t\t\t\tlayer.displayTime = displayTime;\n\t\t\t\t\tlayer.color = scriptProperties.debugText_FlashColor;\n\t\t\t\t\tlayer.scale = new Vec3(debugText_FlashScale * _canvasToScreen);\n\t\t\t\t}\n\t\t\t\telse\n\t\t\t\t\tlayer.lastUpdated = new Date().getTime();\n\t\t\t}\n\t\t\telse {\n\t\t\t\tlet layerSettings = new Object();\n\t\t\t\tif (engine.canvasSize.x !== 0) {\n\t\t\t\t\tlayerSettings.origin = \"0, \" + (engine.canvasSize.y - debugText_Layers.length * (debugText_Size * 3 + 10)) + \", 0\";\n\t\t\t\t}\n\t\t\t\telse {\n\t\t\t\t\tlet ct = thisScene.getCameraTransforms();\n\t\t\t\t\tlet forward = ct.center.subtract(ct.eye).normalize();\n\t\t\t\t\tlet up = ct.up;\n\t\t\t\t\tlet right = forward.cross(up);\n\t\t\t\t\tlet pos = new Vec3(0, .5, 0);//ct.eye.add(forward);//.add(right);\n\t\t\t\t\tlayerSettings.origin = `${pos.x}, ${pos.y}, ${pos.z}`;\n\t\t\t\t}\n\t\t\t\tlayerSettings.name = name.toString() + \"_debugText\";\n\t\t\t\tlayerSettings.text = text;\n\t\t\t\tlayerSettings.pointsize = debugText_Size;\n\t\t\t\tlayerSettings.font = \"systemfont_consolas\";\n\n\t\t\t\tlayerSettings.verticalalign = \"top\";\n\t\t\t\tlayerSettings.horizontalalign = \"left\";\n\t\t\t\tlayerSettings.color = scriptProperties.debugText_FlashColor.x + \", \" + scriptProperties.debugText_FlashColor.y + \", \" + scriptProperties.debugText_FlashColor.z;\n\t\t\t\tlayerSettings.opaquebackground = debugText_ShowBackground;\n\t\t\t\tlayerSettings.backgroundcolor = debugText_BackgroundColor;\n\t\t\t\tlayerSettings.padding = 0;\n\t\t\t\tlayerSettings.alpha = debugText_Alpha;\n\t\t\t\tlayer = thisScene.createLayer(layerSettings);\n\t\t\t\tlayer.lastChanged = layer.lastUpdated = new Date().getTime();\n\t\t\t\tlayer.displayTime = displayTime;\n\t\t\t\tdebugText_Layers.push(layer);\n\t\t\t}\n\t\t}\n\t}\n}\n\nshared.OMGHelpers = OMGHelpers;",
+				"scriptproperties" : 
+				{
+					"debugText_FlashColor" : "0.49804 1.00000 1.00000"
+				},
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 9,
+			"image" : "models/util/solidlayer.json",
+			"locktransforms" : true,
+			"name" : "OMGMatrix (shared script module)",
+			"origin" : "-5.50000 0.00000 0.00000",
+			"scale" : "0.00000 0.00000 0.00000",
+			"size" : "512.00000 512.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"script" : "'use strict';\n\n// matrix functions referenced from https://github.com/mrdoob/three.js/blob/dev/src/math/Matrix4.js\n\nconst deg2rad = Math.PI / 180;\nconst rad2deg = 180 / Math.PI;\n\nfunction clamp(x, min, max){ return Math.max(Math.min(x, max), min) }\n\nclass Mat4 {\n\tconstructor(b){\n\t\tif (b instanceof Mat4){\n\t\t\tthis.elements = new Array(4);\n\t\t\tfor(let i = 0; i < 4; i++){\n\t\t\t\tthis.elements[i] = b.elements[i].slice();\n\t\t\t}\n\t\t}\n\t\telse if (arguments.length === 16){\n\t\t\tthis.elements = new Array(4);\n\t\t\tfor(let i = 0; i < 4; i++){\n\t\t\t\tthis.elements[i] = new Array(4);\n\t\t\t\tfor(let j = 0; j < 4; j++){\n\t\t\t\t\tthis.elements[i][j] = arguments[i*4 + j];\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\telse{\n\t\t\tthis.elements = [\n\t\t\t\t[1, 0, 0, 0],\n\t\t\t\t[0, 1, 0, 0],\n\t\t\t\t[0, 0, 1, 0],\n\t\t\t\t[0, 0, 0, 1]\n\t\t\t];\n\t\t}\n\t}\n\n\n\tprintElements(){\n\t\tfor(let x = 0; x < 4; x++){\n\t\t\tlet line = \"\";\n\t\t\tfor(let y = 0; y < 4; y++){\n\t\t\t\tline += this.elements[x][y].toString() + \" \";\n\t\t\t}\n\t\t\tconsole.log(line);\n\t\t}\n\t}\n\n\n\tmultiply(right){\n\t\tlet a = this.elements;\n\t\tlet b = right.elements;\n\t\tlet r = new Mat4();\n\n\t\tfor (let x = 0; x < 4; x++){\n\t\t\tfor(let y = 0; y < 4; y++){\n\t\t\t\tr.elements[x][y] = a[x][0] * b[0][y] + a[x][1] * b[1][y] + a[x][2] * b[2][y] + a[x][3] * b[3][y];\n\t\t\t}\n\t\t}\n\t\treturn r;\n\t}\n\n\n\tstatic fromAxisAngle(axis, angle){\n\t\tlet cos = Math.cos(angle);\n\t\tlet sin = Math.sin(angle);\n\t\tlet t = 1 - cos;\n\t\tlet x = axis.x, y = axis.y, z = axis.z;\n\t\tlet tx = t*x, ty = t*y;\n\n\t\treturn new Mat4(\n\t\t\ttx * x + cos,      tx * y - sin * z,  tx * z + sin * y,  0,\n\t\t\ttx * y + sin * z,  ty * y + cos,      ty * z - sin * x,  0,\n\t\t\ttx * z - sin * y,  ty * z + sin * x,  t * z * z + cos,   0,\n\t\t\t0,                 0,                 0,                 1\n\t\t);\n\t}\n\n\n\tstatic fromPosition(pos){\n\t\treturn new Mat4(\n\t\t\t1, 0, 0, pos.x,\n\t\t\t0, 1, 0, pos.y,\n\t\t\t0, 0, 1, pos.z,\n\t\t\t0, 0, 0, 1\n\t\t);\n\t}\n\n\n\ttoPosition(){\n\t\tlet m = this.elements;\n\t\treturn new Vec3(m[0][3], m[1][3], m[2][3]);\n\t}\n\n\n\tstatic fromEuler(angles, order){\n\t\tlet r = new Mat4();\n\t\tlet e = angles.multiply(deg2rad);\n\t\tlet sx = Math.sin(e.x), sy = Math.sin(e.y), sz = Math.sin(e.z);\n\t\tlet cx = Math.cos(e.x), cy = Math.cos(e.y), cz = Math.cos(e.z);\n\n\t\tlet o = order;\n\t\tif (typeof(o) !== \"string\")\n\t\t\to = \"XYZ\";\n\n\t\tswitch (o.toUpperCase()){\n\n\t\t\tcase \"XYZ\":\n\t\t\tdefault:\n\t\t\t\tr.elements[0][0] = cy * cz;\n\t\t\t\tr.elements[0][1] = -cy * sz;\n\t\t\t\tr.elements[0][2] = sy;\n\n\t\t\t\tr.elements[1][0] = cx * sz + sx * cz * sy;\n\t\t\t\tr.elements[1][1] = cx * cz - sx * sz * sy;\n\t\t\t\tr.elements[1][2] = -sx * cy;\n\n\t\t\t\tr.elements[2][0] = sx * sz - cx * cz * sy;\n\t\t\t\tr.elements[2][1] = sx * cz + cx * sz * sy;\n\t\t\t\tr.elements[2][2] = cx * cy;\n\t\t\t\tbreak;\n\n\t\t\tcase \"YXZ\":\n\t\t\t\tr.elements[0][0] = cy * cz + sy * sz * sx;\n\t\t\t\tr.elements[0][1] = sy * cz * sx - cy * sz;\n\t\t\t\tr.elements[0][2] = cx * sy;\n\n\t\t\t\tr.elements[1][0] = cx * sz;\n\t\t\t\tr.elements[1][1] = cx * cz;\n\t\t\t\tr.elements[1][2] = -sx;\n\n\t\t\t\tr.elements[2][0] = cy * sz * sx - sy * cz;\n\t\t\t\tr.elements[2][1] = sy * sz + cy * cz * sx;\n\t\t\t\tr.elements[2][2] = cx * cy;\n\t\t\t\tbreak;\n\n\t\t\tcase \"ZXY\":\n\t\t\t\tr.elements[0][0] = cy * cz - sy * sz * sx\n\t\t\t\tr.elements[0][1] = -cx * sz;\n\t\t\t\tr.elements[0][2] = sy * cz + cy * sz * sx;\n\n\t\t\t\tr.elements[1][0] = cy * sz + sy * cz * sx;\n\t\t\t\tr.elements[1][1] = cx * cz;\n\t\t\t\tr.elements[1][2] = sy * sz - cy * cz * sx;\n\n\t\t\t\tr.elements[2][0] = -cx * sy;\n\t\t\t\tr.elements[2][1] = sx;\n\t\t\t\tr.elements[2][2] = cx * cy;\n\t\t\t\tbreak;\n\n\t\t\tcase \"ZYX\":\n\t\t\t\tr.elements[0][0] = cy * cz;\n\t\t\t\tr.elements[0][1] = sx * cz * sy - cx * sz;\n\t\t\t\tr.elements[0][2] = cx * cz * sy + sx * sz;\n\n\t\t\t\tr.elements[1][0] = cy * sz;\n\t\t\t\tr.elements[1][1] = sx * sz * sy + cx * cz;\n\t\t\t\tr.elements[1][2] = cx * sz * sy - sx * cz;\n\n\t\t\t\tr.elements[2][0] = -sy;\n\t\t\t\tr.elements[2][1] = sx * cy;\n\t\t\t\tr.elements[2][2] = cx * cy;\n\t\t\t\tbreak;\n\n\t\t\tcase \"YZX\":\n\t\t\t\tr.elements[0][0] = cy * cz;\n\t\t\t\tr.elements[0][1] = sx * sy - cx * cy * sz;\n\t\t\t\tr.elements[0][2] = sx * cy * sz + cx * sy;\n\n\t\t\t\tr.elements[1][0] = sz;\n\t\t\t\tr.elements[1][1] = cx * cz;\n\t\t\t\tr.elements[1][2] = -sx * cz;\n\n\t\t\t\tr.elements[2][0] = -sy * cz;\n\t\t\t\tr.elements[2][1] = cx * sy * sz + sx * cy;\n\t\t\t\tr.elements[2][2] = cx * cy - sx * sy * sz;\n\t\t\t\tbreak;\n\t\t}\n\n\t\t// right colur.elementsn\n\t\tr.elements[0][3] = 0;\n\t\tr.elements[1][3] = 0;\n\t\tr.elements[2][3] = 0;\n\t\t\n\t\t// bottor.elements row\n\t\tr.elements[3][0] = 0;\n\t\tr.elements[3][1] = 0;\n\t\tr.elements[3][2] = 0;\n\t\tr.elements[3][3] = 1;\n\n\t\treturn r;\n\t}\n\n\n\ttoEuler(order){\n\t\tlet m = this.elements;\n\t\tlet x,y,z;\n\n\t\tlet o = order;\n\t\tif (typeof(o) !== \"string\")\n\t\t\to = \"XYZ\";\n\n\t\tswitch (o.toUpperCase()){\n\t\t\tcase \"XYZ\":\n\t\t\tdefault:\n\t\t\t\ty = Math.asin(clamp(m[0][2], -1, 1));\n\n\t\t\t\tif (Math.abs(m[0][2] < 0.999999)){\n\t\t\t\t\tx = Math.atan2(-m[1][2], m[2][2]);\n\t\t\t\t\tz = Math.atan2(-m[0][1], m[0][0]);\n\t\t\t\t}\n\t\t\t\telse{\n\t\t\t\t\tx = Math.atan2(m[2][1], m[1][1]);\n\t\t\t\t\tz = 0;\n\t\t\t\t}\n\t\t\t\tbreak;\n\t\t\tcase \"YXZ\":\n\t\t\t\tx = Math.asin(-clamp(m[1][2], -1, 1));\n\n\t\t\t\tif (Math.abs(m[1][2] < 0.999999)){\n\t\t\t\t\ty = Math.atan2(m[0][2], m[2][2]);\n\t\t\t\t\tz = Math.atan2(m[1][0], m[1][1]);\n\t\t\t\t}\n\t\t\t\telse{\n\t\t\t\t\ty = Math.atan2(-m[2][0], m[0][0]);\n\t\t\t\t\tz = 0;\n\t\t\t\t}\n\t\t\t\tbreak;\n\t\t\tcase \"ZXY\":\n\t\t\t\tx = Math.asin(clamp(m[2][1], -1, 1));\n\n\t\t\t\tif (Math.abs(m[2][1] < 0.999999)){\n\t\t\t\t\ty = Math.atan2(-m[2][0], m[2][2]);\n\t\t\t\t\tz = Math.atan2(-m[0][1], m[1][1]);\n\t\t\t\t}\n\t\t\t\telse{\n\t\t\t\t\ty = 0;\n\t\t\t\t\tz = Math.atan2(m[1][0], m[0][0]);\n\t\t\t\t}\n\t\t\t\tbreak;\n\t\t\tcase \"ZYX\":\n\t\t\t\ty = Math.asin(-clamp(m[2][0], -1, 1));\n\n\t\t\t\tif (Math.abs(m[2][0] < 0.999999)){\n\t\t\t\t\tx = Math.atan2(m[2][1], m[2][2]);\n\t\t\t\t\tz = Math.atan2(m[1][0], m[0][0]);\n\t\t\t\t}\n\t\t\t\telse{\n\t\t\t\t\tx = 0;\n\t\t\t\t\tz = Math.atan2(-m[0][1], m[1][1]);\n\t\t\t\t}\n\t\t\t\tbreak;\n\t\t\tcase \"YZX\":\n\t\t\t\tz = Math.asin(clamp(m[1][0], -1, 1));\n\n\t\t\t\tif (Math.abs(m[1][0] < 0.999999)){\n\t\t\t\t\tx = Math.atan2(-m[1][2], m[1][1]);\n\t\t\t\t\ty = Math.atan2(-m[2][0], m[0][0]);\n\t\t\t\t}\n\t\t\t\telse{\n\t\t\t\t\tx = 0;\n\t\t\t\t\ty = Math.atan2(m[0][2], m[2][2]);\n\t\t\t\t}\n\t\t\t\tbreak;\n\t\t\tcase \"XZY\":\n\t\t\t\tz = Math.asin(-clamp(m[0][1], -1, 1));\n\n\t\t\t\tif (Math.abs(m[0][1] < 0.999999)){\n\t\t\t\t\tx = Math.atan2(m[2][1], m[1][1]);\n\t\t\t\t\ty = Math.atan2(m[0][2], m[0][0]);\n\t\t\t\t}\n\t\t\t\telse{\n\t\t\t\t\tx = Math.atan2(-m[1][2], m[2][2]);\n\t\t\t\t\ty = 0;\n\t\t\t\t}\n\t\t\t\tbreak;\n\t\t}\n\t\tlet euler = new Vec3(x, y, z);\n\t\teuler = euler.multiply(rad2deg);\n\t\treturn euler;\n\t}\n\n\tstatic fromScale(s) {\n\t\treturn new Mat4(\n\t\t\ts.x, 0,   0,   0,\n\t\t\t0,   s.y, 0,   0,\n\t\t\t0,   0,   s.z, 0,\n\t\t\t0,   0,   0,   1\n\t\t);\n\t}\n\n\ttoScale() {\n\t\tlet m = this.elements;\n\t\treturn new Vec3(\n\t\t\tMath.sqrt(m[0][0]*m[0][0] + m[0][1]*m[0][1] + m[0][2]*m[0][2]),\n\t\t\tMath.sqrt(m[1][0]*m[1][0] + m[1][1]*m[1][1] + m[1][2]*m[1][2]),\n\t\t\tMath.sqrt(m[2][0]*m[2][0] + m[2][1]*m[2][1] + m[2][2]*m[2][2])\n\t\t);\n\t}\n};\n\nshared.Mat4 = Mat4;",
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 10,
+			"image" : "models/util/solidlayer.json",
+			"locktransforms" : true,
+			"name" : "OMGVector (shared script module)",
+			"origin" : "-5.50000 0.00000 0.00000",
+			"scale" : "0.00000 0.00000 0.00000",
+			"size" : "512.00000 512.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"script" : "'use strict';\n\nclass OMGVector {\n\t/**\n\t * @param {Vec3} vector\n\t * @param {Number} angle\n\t * Rotates the vector in radians around the X axis\n\t */\n\tstatic rotX(vector, angle){\n\t\tlet cos = Math.cos(angle);\n\t\tlet sin = Math.sin(angle);\n\t\treturn new Vec3(\n\t\t\tvector.x, \n\t\t\tvector.y * cos - vector.z * sin,\n\t\t\tvector.y * sin + vector.z * cos)\n\t};\n\n\tstatic rotY(vector, angle){\n\t\tlet cos = Math.cos(angle);\n\t\tlet sin = Math.sin(angle);\n\t\treturn new Vec3(\n\t\t\tvector.x * cos + vector.z * sin,\n\t\t\tvector.y, \n\t\t\t-vector.x * sin + vector.z * cos)\n\t};\n\n\tstatic rotZ(vector, angle){\n\t\tlet cos = Math.cos(angle);\n\t\tlet sin = Math.sin(angle);\n\t\treturn new Vec3(\n\t\t\tvector.x * cos - vector.y * sin,\n\t\t\tvector.x * sin + vector.y * cos,\n\t\t\tvector.z)\n\t};\n\n\tstatic rotAxis(vec, angle, axis){\n\t\tlet cos = Math.cos(angle);\n\t\tlet sin = Math.sin(angle);\n\t\treturn new Vec3(\n\t\t\t(cos + (1 - cos) * axis.x * axis.x) * vec.x +\n\t\t\t((1 - cos) * axis.x * axis.y - axis.z * sin) * vec.y +\n\t\t\t((1 - cos) * axis.x * axis.z + axis.y * sin) * vec.z,\n\n\t\t\t((1 - cos) * axis.x * axis.y + axis.z * sin) * vec.x +\n\t\t\t(cos + (1 - cos) * axis.y * axis.y) * vec.y +\n\t\t\t((1 - cos) * axis.y * axis.z - axis.x * sin) * vec.z,\n\n\t\t\t((1 - cos) * axis.x * axis.z - axis.y * sin) * vec.x +\n\t\t\t((1 - cos) * axis.y * axis.z + axis.x * sin) * vec.y +\n\t\t\t(cos + (1 - cos) * axis.z * axis.z) * vec.z\n\t\t);\n\t};\n\n\tstatic rotVec(vector, angles){\n\t\tlet r = rotX(vector, angles.x);\n\t\tr = rotY(r, angles.y);\n\t\treturn r = rotZ(r, angles.z);\n\t};\n\n\tstatic unrotVec(vector, angles){\n\t\tlet r = rotZ(vector, -angles.x);\n\t\tr = rotY(r, -angles.y);\n\t\treturn r = rotX(r, -angles.z);\n\t};\n\n\tstatic forwardY(angles){\n\t\treturn rotVec(new Vec3(0., 1., 0.), angles);\n\t};\n\n\tstatic forwardZ(angles){\n\t\treturn rotVec(new Vec3(0., 0., 1.), angles);\n\t};\n\n\tstatic forwardX(angles){\n\t\treturn rotVec(new Vec3(1., 0., 0.), angles);\n\t};\n\n\tstatic interpAngle(angle1, angle2, percent){\n\t\tlet a1 = [angle1.x % 360, angle1.y % 360, angle1.z % 360];\n\t\tlet a2 = [angle2.x % 360, angle2.y % 360, angle2.z % 360];\n\t\tlet diff = [];\n\t\tfor (let i = 0; i < 3; i++){\n\t\t\tif (a1[i] < 0)\n\t\t\t\ta1[i] += 360;\n\t\t\tif (a2[i] < 0)\n\t\t\t\ta2[i] += 360;\n\t\t\tdiff[i] = a2[i] - a1[i];\n\t\t\tif (diff[i] > 180)\n\t\t\t\tdiff[i] -= 360;\n\t\t\telse if (diff[i] < -180)\n\t\t\t\tdiff[i] += 360;\n\t\t}\n\t\treturn new Vec3(a1[0] + diff[0] * percent, a1[1] + diff[1] * percent, a1[2] + diff[2] * percent);\n\t};\n\n\tstatic interpPosition(pos1, pos2, percent){\n\t\treturn lerp(pos1, pos2, percent);\n\t}\n\n\t/**\n\t * Interpolates linearly between v1 and v2 based on percent (0 to 1).\n\t * @param {Vec3} v1 First vector\n\t * @param {Vec3} v2 Second vector\n\t * @param {Number} percent interpolation value between 0 and 1\n\t */\n\tstatic lerp(v1, v2, percent){\n\t\tlet x = v1.x + (v2.x - v1.x) * percent;\n\t\tlet y = v1.y + (v2.y - v1.y) * percent;\n\t\tlet z = v1.z + (v2.z - v1.z) * percent;\n\t\treturn new Vec3(x, y, z);\n\t};\n\t\n\n\tstatic magnitude(vec){\n\t\treturn Math.sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);\n\t}\n\n\tstatic normalize(vec){\n\t\treturn vec.multiply(1 / OMGVector.magnitude(vec));\n\t};\n\n\t/**\n\t * True if the two vectors contain equal x, y, and z values, otherwise false\n\t * @param [epsilon] {number} The minimum difference allowed between vector values before they are considered non-equal (helps avoid some floating-point issues)\n\t * @return {boolean}\n\t */\n\tstatic equal(v1, v2, epsilon = 0.0001){\n\t\tif (epsilon)\n\t\t\treturn (Math.abs(v1.x - v2.x) < epsilon && Math.abs(v1.y - v2.y) < epsilon && Math.abs(v1.z - v1.z) < epsilon);\n\t\telse\n\t\t\treturn (v1.x === v2.x && v1.y === v2.y && v1.z === v1.z);\n\t}\n}\n\nshared.OMGVector = OMGVector;",
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 11,
+			"image" : "models/util/solidlayer.json",
+			"locktransforms" : true,
+			"name" : "LayerParenting (shared script module)",
+			"origin" : "-5.50000 0.00000 0.00000",
+			"scale" : "0.00000 0.00000 0.00000",
+			"size" : "512.00000 512.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"script" : "'use strict';\n\nexport var scriptProperties = createScriptProperties()\n\t.addCheckbox({\n\t\tname: 'debug',\n\t\tlabel: 'Debug',\n\t\tvalue: false\n\t})\n\t.addCheckbox({\n\t\tname: 'printToScreen',\n\t\tlabel: 'Print to Screen',\n\t\tvalue: false\n\t})\n\t.addCheckbox({\n\t\tname: 'debug_nodeCreation',\n\t\tlabel: 'Debug Node Creation',\n\t\tvalue: false\n\t})\n\t.finish();\n\n// Layer Parenting system which allows layers to inherit various properties from another layer.\n// Created by OMGparticles, 2021\n// If you find this, feel free to use it in your own project. It may have issues, but has worked \n// well enough for my personal projects.\n\nconst Helpers = shared.OMGHelpers;\nconst Mat4 = shared.Mat4;\nconst OMGVector = shared.OMGVector;\n\nexport function init() { \n\t// Create a simple dummy layer for the root node.\n\t_rootNode.layer = thisScene.createLayer({\n\t\tname: \"_LayerParenting_rootNode\",\n\t\timage : \"models/util/solidlayer.json\",\n\t\tsize : \"0 0\"\n\t});\n}\nexport function update() { LayerParenting.update(); }\n\n\n/**\n * Bitwise flags representing the properties of the parent layer which should be inherited.\n * @enum {number} \n */\nconst PARENTFLAG = {\n\tPOSITION   : 1 << 0,\n\tROTATION   : 1 << 1,\n\tSCALE      : 1 << 2,\n\tVISIBILITY : 1 << 3,\n\tALL        : ~0,\n\tNONE       : 0\n}\nshared.PARENTFLAG = PARENTFLAG;\n\n\n/** \n * Contains references to every non-root node, indexed by the scene layer object.\n */\nconst _treeDirectory = new Map();\n\n/** \n * Root node for the scene. Any children of this node effectively have no parent.\n * @type {LayerTreeNode}\n */\nlet _rootNode = undefined; // gets defined after LayerTreeNode's definition.\n\n/** \n * Node in the layer tree which represents a layer and its relationship to any child layers. \n */\nclass LayerTreeNode {\n/** \n * @typedef LayerTreeNodeParams {Object} \n * @property layer {ILayer} - The scene layer represented by this node.\n * @property [parentNode] {LayerTreeNode} - This node's parent.\n * @property [parentFlags] {PARENTFLAG} - An optional set of flags enabling or disabling parenting of various layer attributes.\n * @property [position] {Vec3} - The layer's translational offset from the parent.\n * @property [rotation] {Vec3} - The layer's local rotation in degrees.\n * @property [scale] {Vec3} - The layer's scale.\n */\n\t/** \n\t * @param params {LayerTreeNodeParams} - Object which enables parameters to be set by name rather than by sequence. \n\t */\n\tconstructor(params = {}){\n\t\tthis.layer = params.layer;\n\t\tthis.parentNode = params.parentNode || _rootNode;\n\t\tif (this.parentNode !== undefined) // Will be undefined when creating _rootNode\n\t\t\tthis.parentNode.addChild(this);\n\t\tif (params.parentFlags !== undefined)\n\t\t\tthis.parentFlags = params.parentFlags;\n\t\telse\n\t\t\tthis.parentFlags = PARENTFLAG.ALL;\n\t\t\n\t\t/** @type LayerTreeNode[] */\n\t\tthis.children = [];\n\t\t\n\t\tif (this.layer) {\n\t\t\tthis._lastOrigin = this.layer.origin;\n\t\t\tthis._lastAngles = this.layer.angles;\n\t\t\tthis._lastScale = this.layer.scale;\n\t\t}\n\t\tthis._position = params.position || new Vec3(0, 0, 0);\n\t\tthis._positionMatrix = new Mat4();\n\t\tthis._positionChanged = true;\n\n\t\tthis._rotation = params.rotation || new Vec3(0, 0, 0);\n\t\tthis._rotationMatrix = new Mat4();\n\t\tthis._rotationChanged = true;\n\t\t\n\t\tthis._scale = params.scale || new Vec3(1, 1, 1);\n\t\tthis._scaleMatrix = new Mat4();\n\t\tthis._scaleChanged = true;\n\n\t\tthis._localTransform = new Mat4();\n\t\tthis._localTransformChanged = true;\n\t\t\n\t\t_treeDirectory.set(this.layer, this);\n\n\t\tif (scriptProperties.debug && scriptProperties.debug_nodeCreation) {\n\t\t\tlet message = `Created new LayerTreeNode \"${this.name}\" with parent \"${this.parentNode.name}\"\\n`;\n\t\t\tmessage += `========== Node params ==========\\n`;\n\t\t\tfor (let param in params){\n\t\t\t\tmessage += `${param}: ${params[param]}\\n`;\n\t\t\t}\n\t\t\tmessage += `========== End params ===========`\n\t\t\tfor (let line of message.split('\\n'))\n\t\t\t\tconsole.log(line);\n\t\t\tif (scriptProperties.printToScreen){\n\t\t\t\tHelpers.debugText(message);\n\t\t\t}\n\t\t}\n\t}\n\t\n\t/**\n\t * Removes this node from the tree.\n\t */\n\tdestruct() {\n\t\tremoveChildren();\n\t\tthis.parentNode.removeChild(this);\n\t\t_treeDirectory.delete(this.layer);\n\t\treturn null;\n\t}\n\n\tget name() { return this.layer.name; }\n\n\t/** @return {Vec3} The local offset from the parent's position. */\n\tget position() { return this._position; }\n\tset position(newPos) {\n\t\tif (newPos instanceof Vec3) {\n\t\t\tthis._position = newPos;\n\t\t\tthis._positionChanged = true;\n\t\t\tthis._localTransformChanged = true;\n\t\t}\n\t\treturn newPos;\n\t}\n\tget positionMatrix() {\n\t\tif (this._positionChanged) {\n\t\t\tthis._positionMatrix = Mat4.fromPosition(this._position);\n\t\t\tthis._positionChanged = false;\n\t\t}\n\t\treturn this._positionMatrix;\n\t}\n\n\n\t/** @return {Vec3} The local angles, not including any rotation from the parent. */\n\tget rotation() { return this._rotation; }\n\tset rotation(newRot) {\n\t\tif (newRot instanceof Vec3) {\n\t\t\tthis._rotation = newRot;\n\t\t\tthis._rotationChanged = true;\n\t\t\tthis._localTransformChanged = true;\n\t\t}\n\t\treturn newRot;\n\t}\n\tget rotationMatrix() {\n\t\tif (this._rotationChanged) {\n\t\t\tthis._rotationMatrix = Mat4.fromEuler(this._rotation, \"XYZ\");\n\t\t\tthis._rotationChanged = false;\n\t\t}\n\t\treturn this._rotationMatrix;\n\t}\n\n\t/** @return {Vec3} The local scale, which is multiplied with the parent's. */\n\tget scale() { return this._scale; }\n\tset scale(newScale) {\n\t\tif (newScale instanceof Vec3) {\n\t\t\tthis._scale = newScale;\n\t\t\tthis._scaleChanged = true;\n\t\t\tthis._localTransformChanged = true;\n\t\t}\n\t\treturn newScale;\n\t}\n\tget scaleMatrix() {\n\t\tif (this._scaleChanged) {\n\t\t\tthis._scaleMatrix = Mat4.fromScale(this._scale);\n\t\t\tthis._scaleChanged = false;\n\t\t}\n\t\treturn this._scaleMatrix;\n\t}\n\n\t/** The local offset from the paren't axis/origin */\n\tget localTransform() {\n\t\tif (this._localTransformChanged) {\n\t\t\tthis._localTransform = (\n\t\t\t\tthis.positionMatrix.multiply(\n\t\t\t\tthis.rotationMatrix.multiply(\n\t\t\t\tthis.scaleMatrix\n\t\t\t)));\n\t\t\tthis._localTransformChanged = false;\n\t\t}\n\t\treturn this._localTransform;\n\t}\n\n\t/**\n\t * @return {Mat4} The final transformation matrix for this node \n\t */\n\tget worldTransform() {\n\t\tif (!(this.parentFlags & (PARENTFLAG.POSITION | PARENTFLAG.ROTATION | PARENTFLAG.SCALE)))\n\t\t\treturn this.localTransform;\n\n\t\tlet parentTransform = undefined;\n\t\tif ((this.parentFlags & PARENTFLAG.POSITION) && (this.parentFlags & PARENTFLAG.ROTATION) && (this.parentFlags & PARENTFLAG.SCALE)) {\n\t\t\tparentTransform = this._parentTransform || new Mat4();\n\t\t}\n\t\telse {\n\t\t\tparentTransform = new Mat4();\n\t\t\tif (this.parentFlags & PARENTFLAG.POSITION)\n\t\t\t\tparentTransform.multiply(this.parentNode.positionMatrix);\n\t\t\tif (this.parentFlags & PARENTFLAG.ROTATION)\n\t\t\t\tparentTransform.multiply(this.parentNode.rotationMatrix);\n\t\t\tif (this.parentFlags & PARENTFLAG.SCALE)\n\t\t\t\tparentTransform.multiply(this.parentNode.scaleMatrix);\n\t\t}\n\t\treturn parentTransform.multiply(this.localTransform);\n\t}\n\n\t/**\n\t * @param [parentTransform] {Mat4} - The parent's final transformation matrix\n\t */\n\tupdate(parentTransform) {\n\t\tthis._inheritExternalChanges();\n\n\t\tthis._parentTransform = parentTransform\n\t\tlet finalTransform = this.worldTransform;\n\n\t\tif (this !== _rootNode) {\n\t\t\tif (!this.layer) {\n\t\t\t\t// This node's layer no longer exists, so remove this node from the tree.\n\t\t\t\treturn this.destruct();\n\t\t\t}\n\n\t\t\tthis._lastOrigin = this.layer.origin = finalTransform.toPosition();\n\t\t\tthis._lastAngles = this.layer.angles = finalTransform.toEuler(\"XYZ\");\n\t\t\tthis._lastScale = this.layer.scale = finalTransform.toScale();\n\t\t\tif (this.parentFlags & PARENTFLAG.VISIBILITY)\n\t\t\t\tthis.layer.visible = this.parentNode.layer.visible;\n\t\t}\n\n\t\t// update our children\n\t\tfor (const child of this.children) {\n\t\t\tchild.update(finalTransform);\n\t\t}\n\t}\n\n\t/**\n\t * Checks whether any external source(s) altered properties of the layer since our last update, and updates the node state accordingly.\n\t */\n\t_inheritExternalChanges() {\n\t\tlet message = \"\";\n\t\tif (this !== _rootNode) {\n\t\t\tlet parentLayer = this.parentNode.layer;\n\t\t\tif (this._lastOrigin !== undefined && !OMGVector.equal(this.layer.origin, this._lastOrigin)) {\n\t\t\t\tthis.position = this.layer.origin.subtract(parentLayer.origin).divide(parentLayer.scale);\n\t\t\t\tif (scriptProperties.debug)\n\t\t\t\t\tmessage += `${this.name} position changed from ${this._lastOrigin} to ${this.layer.origin}\\n`;\n\t\t\t}\n\t\t\tif (this._lastAngles!== undefined && !OMGVector.equal(this.layer.angles, this._lastAngles)) {\n\t\t\t\tthis.rotation = this.layer.angles.subtract(parentLayer.angles);\n\t\t\t\tif (scriptProperties.debug)\n\t\t\t\t\tmessage += `${this.name} rotation changed from ${this._lastAngles} to ${this.layer.angles}\\n`;\n\t\t\t}\n\t\t\tif (this._lastScale !== undefined && !OMGVector.equal(this.layer.scale, this._lastScale)) {\n\t\t\t\tthis.scale = this.layer.scale.divide(parentLayer.scale);\n\t\t\t\tif (scriptProperties.debug)\n\t\t\t\t\tmessage += `${this.name} scale changed from ${this._lastScale} to ${this.layer.scale}\\n`;\n\t\t\t}\n\t\t}\n\t\tif (scriptProperties.debug && message !== \"\") {\n\t\t\tconsole.log(message);\n\t\t\tif (scriptProperties.printToScreen)\n\t\t\t\tHelpers.debugText(`LayerParenting_inheritExternalChanges_${this.name}`, message, 10000);\n\t\t}\n\t}\n\n\t/** \n\t * Sets the parent of this node.\n\t * @param parentNode {LayerTreeNode} - This node's new parent node.\n\t */\n\tsetParent(parentNode) {\n\t\tif (parentNode === _rootNode && this.children.length === 0)\n\t\t\tthis.destruct();\n\t\telse if (parentNode !== this.parentNode) {\n\t\t\tthis.parentNode.removeChild(this);\n\t\t\tparentNode.addChild(this);\n\t\t}\n\t}\n\n\t/**\n\t * Detaches this node from its current parent node.\n\t */\n\tunparent() {\n\t\tthis.parentNode.removeChild(this, false);\n\t}\n\n\taddChild(childNode) {\n\t\tif (childNode instanceof LayerTreeNode) {\n\t\t\tchildNode.parentNode = this;\n\t\t\tthis.children.push(childNode);\n\t\t}\n\t}\n\n\t/** \n\t * Detaches the given child node from this node, and attaches it to this node's parent. \n\t * @param childNode {LayerTreeNode} the child node to be detached.\n\t */\n\tremoveChild(childNode, attachtoParent = true) {\n\t\tchildIndex = this.children.indexOf(childNode);\n\t\tif (childIndex !== -1) {\n\t\t\tif (attachtoParent)\n\t\t\t\tchildNode.setParent(this.parentNode);\n\t\t\telse\n\t\t\t\tchildNode.setParent(_rootNode);\n\t\t\tthis.children.splice(childIndex, 1);\n\t\t}\n\t}\n\tremoveChildren() { for(const child of this.children) this.removeChild(child); }\n\n\ttoString() {\n\t\treturn `${this.name}`;\n\t}\n}\n_rootNode = new LayerTreeNode({layer: undefined, parentFlags: PARENTFLAG.NONE});\n\n/**\n * Returns the node for a given layer if it exists, or undefined if no node exists yet.\n * @return {LayerTreeNode}\n */\nfunction getNode(layer) {\n\treturn _treeDirectory.get(layer);\n}\n\nclass LayerParenting {\n\tstatic update(){\n\t\t_rootNode.update();\n\t}\n\n\t/**\n\t * Attaches a child layer to a parent layer, causing it to move and rotate along with the parent.\n\t * @param targetLayer {ILayer} - The child layer.\n\t * @param parentLayer {ILayer} - The parent layer.\n\t * @param [parentFlags] {PARENTFLAG} - An optional set of flags enabling or disabling parenting of various layer attributes.\n\t */\n\tstatic setParent(targetLayer, parentLayer, parentFlags = PARENTFLAG.ALL) {\n\t\tif (!targetLayer)\n\t\t\treturn null;\n\t\tif (!parentLayer) {\n\t\t\tunparent(targetLayer);\n\t\t\treturn null;\n\t\t}\n\n\t\tlet targetNode = getNode(targetLayer);\n\t\tlet parentNode = getNode(parentLayer);\n\t\tif (parentNode === undefined) {\n\t\t\tparentNode = new LayerTreeNode({\n\t\t\t\tlayer: parentLayer,\n\t\t\t\tparentFlags: PARENTFLAG.NONE,\n\t\t\t\tposition: parentLayer.origin,\n\t\t\t\trotation: parentLayer.angles,\n\t\t\t\tscale: parentLayer.scale\n\t\t\t\t});\n\t\t}\n\t\tif (targetNode === undefined) {\n\t\t\ttargetNode = new LayerTreeNode({\n\t\t\t\tlayer: targetLayer,\n\t\t\t\tparentNode: parentNode,\n\t\t\t\tparentFlags: parentFlags,\n\t\t\t\tposition: targetLayer.origin.subtract(parentLayer.origin).divide(parentLayer.scale),\n\t\t\t\trotation: targetLayer.angles.subtract(parentLayer.angles),\n\t\t\t\tscale: targetLayer.scale.divide(parentLayer.scale)\n\t\t\t\t});\n\t\t}\n\t\telse if (targetNode.parentNode === parentNode) {\n\t\t\ttargetNode.parentFlags = parentFlags;\n\t\t\treturn parentLayer;\n\t\t}\n\t\telse {\n\t\t\ttargetNode.setParent(parentNode);\n\t\t}\n\t\t\n\t\tif (scriptProperties.debug) {\n\t\t\tlet message = `Parenting ${targetNode.name} to ${parentNode.name} \\n` +\n\t\t\t              `Local position: ${targetNode.position} \\n` + \n\t\t\t              `Local scale: ${targetNode.scale}`;\n\t\t\tconsole.log(message);\n\t\t\tif (scriptProperties.printToScreen) {\n\t\t\t\tHelpers.debugText(`LayerParenting_setParent_${targetNode.name}`, message, 8000);\n\t\t\t}\n\t\t}\n\t}\n\t\n\t/**\n\t * Returns the node for a given layer if it exists, or undefined if no node exists yet.\n\t * @return {LayerTreeNode}\n\t */\n\tstatic getNode(layer) { return getNode(layer); }\n\n\t/** Detaches the given layer from its parent. Does not detach any children from the given layer. */\n\tstatic unparent(childLayer) {\n\t\tlet node = getNode(childLayer)\n\t\tif (node)\n\t\t\tnode.unparent();\n\t}\n}\nshared.LayerParenting = LayerParenting;",
+				"scriptproperties" : 
+				{
+					"debug" : false,
+					"debug_nodeCreation" : false,
+					"printToScreen" : false
+				},
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 12,
+			"image" : "models/util/solidlayer.json",
+			"locktransforms" : true,
+			"name" : "Interpolators (shared script module)",
+			"origin" : "-5.50000 0.00000 0.00000",
+			"scale" : "0.00000 0.00000 0.00000",
+			"size" : "512.00000 512.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"script" : "'use strict';\n\n// This system allows you to create interpolator objects which will change a property on a given\n// layer over time. There are different types of interpolators each with different behaviors.\n// Created by OMGparticles, 2021\n// If you find this, feel free to use it in your own project. It may have issues, but has worked \n// well enough for my personal projects.\n\nconst Helpers = shared.OMGHelpers;\n\nshared.timeNudge = 0;\n\n/** @type {Interpolator[]} */\nlet activeInterps = [];\n\n\nexport function update() {\n\tactiveInterps.forEach((interp, index, array) => {\n\t\tinterp.update(engine.frametime + (shared.timeNudge || 0));\n\t});\n\tshared.timeNudge = 0;\n}\n\n\n\n\n/** Modifies an object property over a period of time */\nclass Interpolator {\n/** \n * @typedef {Object} InterpolatorParams\n * @property targetObject {object} - The object whose property value will be modified\n * @property propertyName {String} - The name of the property key to be modified\n * @property duration {Number} - How long it will take to reach the final value.\n * @property startValue {object} - An optional starting value. If not set, will use the properties existing value.\n * @property startOffset {object} - An optional offset to the starting value.\n * @property endValue {object} - The value the target variable will reach at the end of the duration. If not set, will use the properties existing value.\n * @property endOffset {object} - An optional offset to the end value.\n */\n\t/** \n\t * @param {InterpolatorParams} params - Object which allows parameters to be set by name. \n\t */\n\tconstructor(params) {\n\t\tthis.targetObject = params.targetObject;\n\t\tthis.propertyName = params.propertyName || \"origin\";\n\t\tthis.duration = params.duration || 1.0;\n\t\tthis.elapsedTime = 0;\n\t\tactiveInterps.push(this);\n\t\t\n\t\tif (params.startValue !== undefined)\n\t\t\tthis.startValue = Helpers.add(params.startValue, params.startOffset);\n\t\telse\n\t\t\tthis.startValue = Helpers.add(this.targetValue, params.startOffset);\n\t\tthis.targetValue = this.startValue;\n\t\t\n\t\tif (params.endValue !== undefined)\n\t\t\tthis.endValue = Helpers.add(params.endValue, params.endOffset);\n\t\telse\n\t\t\tthis.endValue = Helpers.add(this.targetValue, params.endOffset);\n\t}\n\n\t/** \n\t * Returns an array of interpolators currently affecting the given object \n\t */\n\tstatic getInterpolators(targetObject) {\n\t\tif (targetObject !== undefined)\n\t\t{\n\t\t\tlet targetInterps = [];\n\t\t\tfor (let i of activeInterps) {\n\t\t\t\tif (i.targetObject === targetObject)\n\t\t\t\t\ttargetInterps.push(i);\n\t\t\t}\n\t\t\treturn targetInterps;\n\t\t}\n\t\telse\n\t\t\treturn activeInterps;\n\t}\n\n\t/**\n\t * Instantly destroys alls interpolators affecting the target object\n\t */\n\tstatic clearInterpolators(targetObject) {\n\t\tlet interps = undefined;\n\t\tif (targetObject !== undefined)\n\t\t\tinterps = Interpolator.getInterpolators(targetObject) || [];\n\t\telse\n\t\t\tinterps = activeInterps;\n\t\tfor (let i of interps)\n\t\t\ti.destroy();\n\t}\n\n\tstatic finishInterpolators(targetObject) {\n\t\tlet interps = undefined;\n\t\tif (targetObject !== undefined)\n\t\t\tinterps = Interpolator.getInterpolators(targetObject) || [];\n\t\telse\n\t\t\tinterps = activeInterps;\n\t\tfor (let i of interps) { \n\t\t\ti.finish();\n\t\t\ti.destroy();\n\t\t}\n\t}\n\n\tget targetValue() {return this.targetObject[this.propertyName]}\n\tset targetValue(newValue) {return this.targetObject[this.propertyName] = newValue}\n\n\tupdate(dt) {\n\t\tthis.elapsedTime += dt;\n\t\tif (this.elapsedTime > this.duration) {\n\t\t\tthis.finish();\n\t\t\tthis.destroy();\n\t\t}\n\t\telse\n\t\t\tthis.interpolate();\n\t}\n\n\tinterpolate() {\n\t\t// Perform interpolation here\n\t}\n\n\t/** Performs any final adjustments before this interpolator expires. */ \n\tfinish() {\n\t\tthis.targetValue = this.endValue;\n\t}\n\n\tdestroy() {\n\t\tactiveInterps.splice(activeInterps.indexOf(this), 1);\n\t}\n}\nshared.Interpolator = new Object();\nshared.Interpolator.getInterpolators = Interpolator.getInterpolators;\nshared.Interpolator.clearInterpolators = Interpolator.clearInterpolators;\nshared.Interpolator.finishInterpolators = Interpolator.finishInterpolators;\n\n\n/** Transitions from the start to end value at a constant rate. */\nclass LinearInterp extends Interpolator {\n\tinterpolate() {\n\t\tlet percentage = this.elapsedTime / this.duration;\n\t\tthis.targetValue = Helpers.lerp(this.startValue, this.endValue, percentage);\n\t}\n}\nshared.LinearInterp = LinearInterp;\n\n\n\n/** Transitions from the start to end value, moving slowly at first then speeding up. */\nclass EaseOutInterp extends Interpolator {\n\tinterpolate() {\n\t\tlet percentage = this.elapsedTime / this.duration;\n\t\tthis.targetValue = Helpers.lerp(this.startValue, this.endValue, percentage * (2 - percentage));\n\t}\n}\nshared.EaseOutInterp = EaseOutInterp;\n\n\n\n/** Transitions from the start to end value, moving slowly at first then speeding up. */\nclass EaseOutStrongInterp extends Interpolator {\n\tinterpolate() {\n\t\tlet percentage = this.elapsedTime / this.duration;\n\t\tthis.targetValue = Helpers.lerp(this.startValue, this.endValue, Math.pow(percentage-1, 3) + 1);\n\t}\n}\nshared.EaseOutStrongInterp = EaseOutStrongInterp;\n\n\n\n/** Transitions from the start to end value, moving slowly at first then speeding up. */\nclass EaseInInterp extends Interpolator {\n\tinterpolate() {\n\t\tlet percentage = this.elapsedTime / this.duration;\n\t\tthis.targetValue = Helpers.lerp(this.startValue, this.endValue, Math.pow(percentage, 2));\n\t}\n}\nshared.EaseInInterp = EaseInInterp;\n\n\n\n/** Transitions from the start to end value, moving slowly at first, quickly in the middle, then slow again at the end. */\nclass EaseInOutInterp extends Interpolator {\n\tinterpolate() {\n\t\tlet x = this.elapsedTime / this.duration;\n\t\tthis.targetValue = Helpers.lerp(this.startValue, this.endValue, x * x * (3 - 2 * x));\n\t}\n}\nshared.EaseInOutInterp = EaseInOutInterp;",
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 13,
+			"image" : "models/util/solidlayer.json",
+			"locktransforms" : true,
+			"name" : "Audio Manager (script)",
+			"origin" : "1920.00000 1080.00000 0.00000",
+			"size" : "512.00000 512.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"script" : "'use strict';\n\nexport var scriptProperties = createScriptProperties()\n\t.addCheckbox({\n\t\tname: 'debug_audio',\n\t\tlabel: 'Debug Audio',\n\t\tvalue: false\n\t})\n\t.finish();\n\nconst Helpers = shared.OMGHelpers;\n\n// const ScenePhase = shared.ScenePhase || function() {return shared.ScenePhase};\n// const SceneManager = shared.SceneManager || function() {return shared.SceneManager};\n\n// These values aren't defined yet, but assigning them here gives us autocomplete.\n// We assign the actual class pointers in init().\nlet ScenePhase = shared.ScenePhase; \nlet SceneManager = shared.SceneManager;\n\nlet _a_TitleMusic1 = engine.registerAsset(\"sounds/musicTitle.ogg\");\nlet _a_TitleMusic2 = engine.registerAsset(\"sounds/musicTitle2.ogg\");\n\n// User property settings\nlet _music = undefined;\nlet _ambient_volume = undefined;\n\n// Private variables\nconst _musicRepeatDelay = 146;\nconst _fadeDuration = 1.0;\nlet _currentTime = new Date().getTime();\n\n/** @type MusicLayer[] */\nlet _activeMusic = [];\n/** @type AmbienceLayer[] */\nlet _activeAmbience = [];\n/** @type SoundLayer[] */\nlet _activeSounds = [];\n\n\n\nexport function init(value) {\n\tScenePhase = shared.ScenePhase;\n\tSceneManager = shared.SceneManager;\n}\n\n\nexport function update(value) {\n\tAudioManager.update();\n}\n\n\n\n/**\n * @param {Object} userProperties\n */\nexport function applyUserProperties(userProperties) {\n\tif (userProperties.music != undefined && userProperties.music != _music) {\n\t\t_music = userProperties.music;\n\t\tAudioManager.stopMusic();\n\t\tAudioManager.startLoopingMusic(_music);\n\t}\n\tif (userProperties.ambient_volume != undefined && userProperties.ambient_volume != _ambient_volume) {\n\t\t_ambient_volume = userProperties.ambient_volume;\n\t}\n}\n\n\n/** Can start and stop sounds and loop music dynamically. */\nclass AudioManager {\n\tstatic update() {\n\t\t_currentTime = new Date().getTime();\n\n\t\t// Update active sounds\n\t\t_activeSounds.forEach(\n\t\t\tfunction(soundLayer, index, array) {\n\t\t\t\tsoundLayer.update();\n\t\t\t\tif (soundLayer.isDone) {\n\t\t\t\t\tarray.splice(index, 1);\n\t\t\t\t}\n\t\t\t}\n\t\t);\n\n\n\t\t// Update active music\n\t\t_activeMusic.forEach(\n\t\t\tfunction(musicLayer, index, array) {\n\t\t\t\tmusicLayer.update();\n\t\t\t\tif (musicLayer.isDone) {\n\t\t\t\t\tarray.splice(index, 1);\n\t\t\t\t}\n\t\t\t}\n\t\t);\n\n\t\t// Update active music\n\t\t_activeAmbience.forEach(\n\t\t\tfunction(ambientLayer, index, array) {\n\t\t\t\tambientLayer.update();\n\t\t\t\tif (ambientLayer.isDone) {\n\t\t\t\t\tarray.splice(index, 1);\n\t\t\t\t}\n\t\t\t}\n\t\t);\n\n\t\t// Print debug info to screen\n\t\tif (scriptProperties.debug_audio)\n\t\t{\n\t\t\tif (_activeMusic.length > 0)\n\t\t\t{\n\t\t\t\tHelpers.debugText(\"MusicHeader\", \"Music:\");\n\t\t\t\tfor (let musicLayer of _activeMusic) {\n\t\t\t\t\tlet musicTime = new Date(null);\n\t\t\t\t\tif (musicLayer.startTime)\n\t\t\t\t\t\tmusicTime.setSeconds((_currentTime - musicLayer.startTime) / 1000.0);\n\t\t\t\t\tmusicTime = musicTime.toISOString().substr(14, 5);\n\t\t\t\t\tlet isPlaying = musicLayer.isPlaying ? \"Playing\" : \"Not Playing\";\n\t\t\t\t\tHelpers.debugText(musicLayer.name, `${musicLayer.name} (${isPlaying}) - ${musicTime} - Start Time: ${musicLayer.startTime}`);\n\t\t\t\t}\n\t\t\t}\n\t\t\tif (_activeAmbience.length > 0)\n\t\t\t{\n\t\t\t\tHelpers.debugText(\"ambientHeader\", \"Ambience:\");\n\t\t\t\tfor (let ambientLayer of _activeAmbience) {\n\t\t\t\t\tlet ambientTime = new Date(null);\n\t\t\t\t\tif (ambientLayer.startTime)\n\t\t\t\t\t\tambientTime.setSeconds((_currentTime - ambientLayer.startTime) / 1000.0);\n\t\t\t\t\tambientTime = ambientTime.toISOString().substr(14, 5);\n\t\t\t\t\tlet isPlaying = ambientLayer.isPlaying ? \"Playing\" : \"Not Playing\";\n\t\t\t\t\tHelpers.debugText(ambientLayer.name, `${ambientLayer.name} (${isPlaying}) - ${ambientTime}`);\n\t\t\t\t}\n\t\t\t}\n\t\t\tif (_activeSounds.length > 0)\n\t\t\t{\n\t\t\t\tHelpers.debugText(\"SoundHeader\", \"Sounds:\");\n\t\t\t\tfor (let soundLayer of _activeSounds) {\n\t\t\t\t\tlet isPlaying = soundLayer.isPlaying ? \"Playing\" : \"Not Playing\";\n\t\t\t\t\tHelpers.debugText(soundLayer.name, `${soundLayer.name} (${isPlaying})`);\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\tstatic isSoundPlaying() {\n\t\treturn _activeSounds.some(soundLayer => soundLayer.isPlaying);\n\t}\n\n\tstatic isMusicPlaying() {\n\t\treturn _activeMusic.some(musicLayer => musicLayer.isPlaying);\n\t}\n\n\tstatic isAmbiencePlaying() {\n\t\treturn _activeAmbience.some(ambientLayer => ambientLayer.isPlaying);\n\t}\n\n\n\t/** Starts fading out all active music */\n\tstatic stopMusic() {\n\t\tfor (const musicLayer of _activeMusic)\n\t\t\tmusicLayer.startFade();\n\t}\n\n\tstatic stopAmbience() {\n\t\tfor (const ambienceLayer of _activeAmbience)\n\t\t\tambienceLayer.startFade();\n\t}\n\n\t/** Begins looping the given music track. */\n\tstatic startMusic(music = _music) {\n\t\tlet newMusic = undefined;\n\n\t\tswitch (music) {\n\t\tdefault:\n\t\t\tnewMusic = new MusicLayer(_a_TitleMusic, 0.7, _musicRepeatDelay);\n\t\t\tbreak;\n\t\tcase \"None\":\n\t\t\tbreak;\n\t\t}\n\n\t\treturn newMusic;\n\t}\n\n\t/** Begins looping the given music track. */\n\tstatic startLoopingMusic(music = _music) {\n\t\tlet newMusic = undefined;\n\n\t\tswitch (music) {\n\t\tdefault:\n\t\t\t// newMusic = new LoopingMusicLayer(_a_TitleMusic, 0.7, _musicRepeatDelay);\n\t\t\tbreak;\n\t\tcase \"None\":\n\t\t\tbreak;\n\t\t}\n\n\t\treturn newMusic;\n\t}\n\n\t/** Begins looping the ambience track. */\n\tstatic startAmbience() {\n\t\treturn new AmbientLayer(_a_TitleAmbient, _ambient_volume * 0.01, _musicRepeatDelay);\n\t}\n\n\t/** Plays a single sound\n\t * @returns {SoundLayer} The created sound layer\n\t */\n\tstatic playSound(asset, volume = 0.5) {\n\t\treturn new SoundLayer(asset, volume);\n\t}\n}\nshared.AudioManager = AudioManager;\n\n\n\nclass AudioLayer {\n\tconstructor(asset, volume = 0.5) {\n\t\tthis.asset = asset;\n\t\tthis._layer = thisScene.createLayer({\n\t\t\tname: asset,\n\t\t\tsound: asset,\n\t\t\tvolume: Math.max(volume, 0.001), // Give it some volume or the layer might not be created\n\t\t\tstartsilent: true\n\t\t});\n\t\t// let layerSettings = new Object();\n\t\t// layerSettings.name = asset;\n\t\t// layerSettings.sound = asset;\n\t\t// layerSettings.volume = Math.max(volume, 0.001);\n\t\t// layerSettings.startsilent = true;\n\t\t// this._layer = thisScene.createLayer(layerSettings);\n\t\tthis.register();\n\t}\n\n\tget name() {return this._layer.name}\n\tget volume() {return this._layer.volume}\n\tset volume(val) {return this._layer.volume = val}\n\tpause() {this._layer.pause()}\n\tstop() {this._layer.stop()}\n\tplay() {this._layer.play()}\n\tget isPlaying() {return this._layer.isPlaying()}\n\n\tregister() {_activeSounds.push(this);}\n\n\tupdate() {}\n\n\tdestroy() {\n\t\tthis.isDone = true;\n\t\t//this.stop();\n\t\tengine.setTimeout( ()=>{thisScene.destroyLayer(this._layer);} , 100); // Destroy layer after a short delay since there seems to be some buffering involved that cuts sounds off early\n\t}\n}\n\n\n/** Plays the given sound asset once, then destroys itself. */\nclass SoundLayer extends AudioLayer{\n\tconstructor(asset, volume = 0.5) {\n\t\tsuper(asset, volume);\n\t\tthis._layer.playbackmode = \"single\";\n\t\tthis.hasPlayed = false;\n\t}\n\n\tupdate() {\n\t\t// Delayed start to prevent audio hiccups\n\t\tif (!this.isPlaying) {\n\t\t\tif (!this.hasPlayed) {\n\t\t\t\tthis._layer.play();\n\t\t\t\tthis.hasPlayed = true;\n\t\t\t}\n\t\t\telse {\n\t\t\t\tthis.destroy();\n\t\t\t}\n\t\t}\n\t}\n}\n\n\n\n/** Audio layer that crossfade loops itself after the specified repeat delay */\nclass MusicLayer extends AudioLayer{\n\tconstructor(asset, volume = 0.5, repeatDelay = 9999){\n\t\tsuper(asset, volume);\n\t\tthis.unfadedVolume = volume;\n\t\tthis._layer.playbackmode = \"single\";\n\t\t/** How many seconds to play before the track loops */\n\t\tthis.repeatDelay = repeatDelay;\n\t\t/** The track will fade out for this many seconds whenever it loops */\n\t\tthis.fadeDuration = _fadeDuration;\n\t}\n\t\n\tset volume(val) {this.unfadedVolume = val}\n\tget volume() {return this.unfadedVolume}\n\tget isPlaying() {return (this.startTime && this._layer.isPlaying())}\n\n\tregister() { _activeMusic.push(this); }\n\n\tupdate() {\n\t\t// Fade out then kill layer\n\t\tif (this.bFadingOut) {\n\t\t\tif (_currentTime > this.fadeEndTime) {\n\t\t\t\tthis.destroy();\n\t\t\t}\n\t\t\telse {\n\t\t\t\tlet fadeLerp = (_currentTime - this.fadeStartTime) / (this.fadeEndTime - this.fadeStartTime);\n\t\t\t\tthis._layer.volume = Helpers.lerp(this.unfadedVolume, 0, fadeLerp);\n\t\t\t}\n\t\t}\n\t\t// Delayed start to prevent audio hiccups\n\t\telse if (this.startTime === undefined) {\n\t\t\tthis._layer.play();\n\n\t\t\tif (scriptProperties.debug_audio)\n\t\t\t\tHelpers.debugText(`musicPlay_${this.name}`, `Attempting to start music ${this.name}.`, 50);\n\t\t\t\t\n\t\t\t// If the wallpaper is muted when the music starts, it won't be able to play. Keep trying until it is unmuted.\n\t\t\tif (this._layer.isPlaying())\n\t\t\t{\n\t\t\t\tthis.startTime = _currentTime;\n\t\t\t\tthis.endTime = this.startTime + this.repeatDelay * 1000;\n\n\t\t\t\tif (scriptProperties.debug_audio)\n\t\t\t\t\tHelpers.debugText(`musicStart_${this.name}`, `Starting Music ${this.name}. Start Time: ${this.startTime}`, 10000);\n\t\t\t}\n\t\t}\n\t\telse {\n\t\t\t// Update volume\n\t\t\tthis._layer.volume = this.unfadedVolume;\n\n\t\t\t// Start new audio\n\t\t\tif (_currentTime > this.endTime) {\n\t\t\t\tthis.loop();\n\t\t\t}\n\t\t}\n\t}\n\n\tstartFade() {\n\t\tif (!this.bFadingOut) {\n\t\t\tthis.bFadingOut = true;\n\t\t\tthis.fadeStartTime = _currentTime;\n\t\t\tthis.fadeEndTime = _currentTime + this.fadeDuration * 1000;\n\t\t}\n\t}\n\n\tloop() {\n\t\tthis.startFade();\n\t\tlet newLayer = new MusicLayer(this.asset, this.unfadedVolume);\n\t\tnewLayer.repeatDelay = this.repeatDelay;\n\t\tnewLayer.volume = this.unfadedVolume;\n\t}\n}\n\n// When we don't need the crossfade, let the engine just loop the track normally\nclass LoopingMusicLayer extends MusicLayer {\n\tconstructor(asset, volume = 0.5, repeatDelay = 99999){\n\t\tsuper(asset, volume, repeatDelay);\n\t\tthis._layer.playbackmode = \"loop\"\n\t}\n}\n\nclass AmbientLayer extends MusicLayer {\n\tconstructor(asset, volume = 0.5, repeatDelay = 9999){ super(asset, volume, repeatDelay); }\n\tregister() { _activeAmbience.push(this); }\n\n\tupdate() {\n\t\tsuper.update();\n\t\tthis.volume = Math.max(_ambient_volume * 0.01, 0.001);\n\t}\n\n\tloop() {\n\t\tthis.startFade();\n\t\tlet newLayer = new AmbientLayer(this.asset);\n\t\tnewLayer.repeatDelay = this.repeatDelay;\n\t\tnewLayer.volume = this.unfadedVolume;\n\t}\n}",
+				"scriptproperties" : 
+				{
+					"debug_audio" : false
+				},
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 14,
+			"image" : "models/util/solidlayer.json",
+			"locktransforms" : true,
+			"name" : "Scene Manager (script)",
+			"origin" : "1920.00000 1080.00000 0.00000",
+			"scale" : "100.00000 100.00000 1.00000",
+			"size" : "512.00000 512.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"script" : "'use strict';\n\nexport var scriptProperties = createScriptProperties()\n\t.addCheckbox({\n\t\tname: 'debug_ScenePhase',\n\t\tlabel: 'Debug Scene Phase',\n\t\tvalue: false\n\t})\n\t.finish();\n\n\t\nconst Helpers = shared.OMGHelpers;\nconst AudioManager = shared.AudioManager;\nconst LinearInterp = shared.LinearInterp;\nconst EaseOutInterp = shared.EaseOutInterp;\nconst EaseOutStrongInterp = shared.EaseOutStrongInterp;\nconst EaseInInterp = shared.EaseInInterp;\nconst EaseInOutInterp = shared.EaseInOutInterp;\nconst LayerParenting = shared.LayerParenting;\nconst Interpolator = shared.Interpolator;\n\n\n// Register audio\n// let a_mouseClick = engine.registerAsset(\"sounds/mouseclick.ogg\");\n\n\n// \"Private variables\"\nlet clicksOnLeaf = 0;\n\nlet activePhase = undefined;\nlet phaseTime = 0.0;\nlet phaseProgress = 0.0;\n\n\nconst ScenePhase = {\n\tMAIN : {\n\t\tname : \"main\",\n\t\tget nextPhase() {return null},\n\t\tupdate : function() {},\n\t\tinit : function() {},\n\t}\n}\nshared.ScenePhase = ScenePhase;\n\nclass SceneManager {\n\tstatic update() {\t\t\n\t\tif (activePhase) {\n\t\t\t// Advance phase\n\t\t\tphaseTime += engine.frametime;\n\t\t\tif (phaseTime > activePhase.length && activePhase.nextPhase) {\n\t\t\t\t// Complete any remaining actions before ending the phase.\n\t\t\t\tactivePhase.update();\n\t\t\t\t// Advance to the next phase.\n\t\t\t\tSceneManager.advancePhase();\n\t\t\t}\n\t\t\tif (activePhase.length !== 0)\n\t\t\t\tshared.phaseProgress = phaseTime / activePhase.length;\n\t\t\telse \n\t\t\t\tshared.phaseProgress = 0.0;\n\n\t\t\t// Update active phase\n\t\t\tif (typeof(activePhase.update) === \"function\")\n\t\t\t\tactivePhase.update();\n\t\t}\n\n\t\t// Helpers.printObjectValues(thisScene.getLayer(\"Splash Glow Fade\").getEffect(0).getMaterial(3));\n\t\t// console.log(thisScene.getLayer(\"Splash Glow Fade\").getEffect(0).getMaterial(3).compositealpha);\n\t\t// thisScene.getLayer(\"Splash Glow Fade\").getEffect(0).getMaterial(3).compositealpha = 0;\n\t}\n\t\n\tstatic get phase() {return activePhase}\n\n\tstatic get phaseTime() {return phaseTime}\n\n/** Ends the current phase and skips to the next one. Any remaining actions are skipped. */\n\tstatic advancePhase() {\n\t\tif (typeof(activePhase.end) === \"function\")\n\t\t\tactivePhase.end();\n\t\tif (activePhase.nextPhase)\n\t\t\tSceneManager.setPhase(activePhase.nextPhase);\n\t}\n\n/** Jumps forward to the end of the current phase, completing any remaining actions in one frame. */\n\tstatic completePhase() {\n\t\tphaseTime = activePhase.length;\n\t\t// Update active phase\n\t\tif (typeof(activePhase.update) === \"function\")\n\t\t\tactivePhase.update();\n\t}\n\n\tstatic setPhase(newPhase, bInit = true) {\n\t\tif (activePhase && typeof(activePhase.exit) === \"function\")\n\t\t\tactivePhase.exit();\n\t\tactivePhase = newPhase;\n\t\tphaseTime = 0;\n\t\tif (bInit && typeof(activePhase.init) === \"function\")\n\t\t\tactivePhase.init();\n\t}\n\n\tstatic skipPressed() {\n\t\tshared.timeNudge = activePhase.length - phaseTime; // Advance any active interpolators.\n\t\tthis.advancePhase(); // Skip to the next phase.\n\t}\n}\nshared.SceneManager = SceneManager;\n\n\n\n/** Initialize in update instead of init, since we want to load user settings before we initialize */\nlet bFirstUpdate = true;\n/**\n * @param {Boolean} value (for property 'visible')\n */\nexport function update(value) {\n\tif (bFirstUpdate) {\n\t\tbFirstUpdate = false;\n\n\t\t// Set the initial phase in update(), as init() runs before we get user properties\n\t\tSceneManager.setPhase(ScenePhase.MAIN);\n\t}\n\telse\n\t\tSceneManager.update();\n\n\tif (scriptProperties.debug_ScenePhase) {\n\t\tHelpers.debugText(\"scenePhase\", `Phase: ${activePhase.name}`);\n\t\tHelpers.debugText(\"scenePhaseTime\", `Phase time: ${phaseTime}`);\n\t}\n\n\treturn value;\n}\n\n\n\n/**\n * @param {Object} userProperties\n */\nexport function applyUserProperties(userProperties) {\n\t\n}\n\n\n/**\n * @param {ICursorEvent} event\n */\nexport function cursorClick(event) {\n\t\n}",
+				"scriptproperties" : 
+				{
+					"debug_ScenePhase" : false
+				},
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 15,
+			"image" : "models/util/solidlayer.json",
+			"locktransforms" : true,
+			"name" : "Shared logic (script)",
+			"origin" : "960.00000 540.00000 0.00000",
+			"size" : "0.00000 0.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"script" : "'use strict';\nconst Helpers = shared.OMGHelpers;\n\n/** How fast the background scrolls. */\nshared.bgSpeed = new Vec2(-0.003, 0.0);\n\n/** How fast the planet rotates. */\nshared.planetSpeed = 1.75;\n\n/** The vertical position of the planet's center */\nshared.planetHeight = -865\n\n/** Global scale multiplier for UI elements. */\nshared.ui_scale = 1;\n\n\n\n/** \n * Coordinates that correspond to the horizontal extents of the visible part of the wallpaper based on the current display's aspect ratio. \n * @type Vec2\n*/\nshared.screenBoundsX = undefined;\n/** \n * Canvas coordinates that correspond to the vertical extents of the visible part of the wallpaper based on the current display's aspect ratio. \n * @type Vec2\n*/\nshared.screenBoundsY = undefined;\n/** \n * Multiply scale by this value to make sure an object's pixel dimensions do not change when the screen dimensions change.\n * @type number\n */\nshared.canvasToScreen = undefined;\n\nfunction calculateCanvasBounds() {\n\tshared.canvasToScreen = Math.min(engine.canvasSize.x / engine.screenResolution.x, engine.canvasSize.y / engine.screenResolution.y);\n\t\n\tshared.zoom = engine.screenResolution.y < 800 || engine.screenResolution.x < 1200 ? 2 : 3;\n\n\tlet screenAspectRatio = engine.screenResolution.x / engine.screenResolution.y;\n\tlet canvasAspectRatio = engine.canvasSize.x / engine.canvasSize.y;\n\tif (screenAspectRatio > canvasAspectRatio) {\n\t\tlet height = engine.screenResolution.y * engine.canvasSize.x / engine.screenResolution.x;\n\t\tlet cornerOffset = (engine.canvasSize.y - height) / 2;\n\t\tshared.screenBoundsX = new Vec2(0, engine.canvasSize.x);\n\t\tshared.screenBoundsY = new Vec2(cornerOffset, engine.canvasSize.y - cornerOffset);\n\t}\n\telse {\n\t\tlet width = engine.screenResolution.x * engine.canvasSize.y / engine.screenResolution.y;\n\t\tlet cornerOffset = (engine.canvasSize.x - width) / 2;\n\t\tshared.screenBoundsX = new Vec2(cornerOffset, engine.canvasSize.x - cornerOffset);\n\t\tshared.screenBoundsY = new Vec2(0, engine.canvasSize.y);\n\t}\n}\n\nexport function init() {\n\tcalculateCanvasBounds();\n}\n\nexport function resizeScreen() {\n\tcalculateCanvasBounds();\n}\n\n\n/**\n * @param {Object} changedUserProperties - only includes user properties that were recently changed!\n */\nexport function applyUserProperties(changedUserProperties) {\n\tif (changedUserProperties.planet_height !== undefined) {\n\t\tshared.planetHeight = changedUserProperties.planet_height * 400.0 - 1265.0;\n\t}\n}\n",
+				"value" : false
+			}
+		},
+		{
+			"id" : 23,
+			"locktransforms" : true,
+			"maxtime" : 5.0,
+			"mintime" : 1.0,
+			"muteineditor" : true,
+			"name" : "Silence (Enables volume slider)",
+			"origin" : "-100.00000 -100.00000 0.00000",
+			"playbackmode" : "loop",
+			"sound" : [],
+			"startsilent" : true,
+			"volume" : 0.5
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"effects" : 
+			[
+				{
+					"file" : "effects/transform/effect.json",
+					"id" : 20,
+					"name" : "Tile + Scroll",
+					"passes" : 
+					[
+						{
+							"constantshadervalues" : 
+							{
+								"angle" : 0.0,
+								"offset" : 
+								{
+									"script" : "'use strict';\n\n/**\n * @param {Vec2} value - for property 'offset'\n * @return {Vec2} - update current property value\n */\nexport function update(value) {\n\treturn value.add(shared.bgSpeed.multiply(engine.frametime));\n}\n",
+									"value" : "0.00000 0.00000"
+								},
+								"scale" : "3.25 3.25"
+							},
+							"id" : 21
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 16,
+			"image" : "models/bTitlescreen_0.json",
+			"name" : "Background stars",
+			"origin" : "1920.00000 1080.00000 0.00000",
+			"parallaxDepth" : "0.05000 0.05000",
+			"scale" : "10.00000 10.00000 10.00000",
+			"size" : "1024.00000 580.00000",
+			"solid" : true
+		},
+		{
+			"id" : 104,
+			"instanceoverride" : null,
+			"name" : "Shooting_stars",
+			"origin" : "1920.00000 1080.00000 0.00000",
+			"particle" : "particles/Shooting_stars.json"
+		},
+		{
+			"id" : 115,
+			"instanceoverride" : 
+			{
+				"count" : 1.1,
+				"id" : 116
+			},
+			"name" : "Shooting_stars",
+			"origin" : "1920.00000 1080.00000 0.00000",
+			"particle" : "particles/Shooting_stars.json"
+		},
+		{
+			"id" : 106,
+			"name" : "Title Root",
+			"origin" : 
+			{
+				"script" : "'use strict';\n\n/**\n * @param {Object} changedUserProperties - only includes user properties that were recently changed!\n */\nexport function applyUserProperties(changedUserProperties) {\n\tif (changedUserProperties.title_height !== undefined)\n\t\tthisLayer.origin = new Vec3(1920, changedUserProperties.title_height * 2160, 0);\n}\n",
+				"value" : "1920.00000 1080.00000 0.00000"
+			},
+			"scale" : 
+			{
+				"script" : "'use strict';\nconst Helpers = shared.OMGHelpers;\n\n/** The smallest width the viewport can be before we have to start shrinking the title. */\nconst minWidth = 1900;\n\nfunction adjustScale() {\n\tlet newWidth = Math.min(minWidth, shared.screenBoundsX.y - shared.screenBoundsX.x);\n\tthisLayer.scale = new Vec3(newWidth / minWidth);\n}\n\nexport function init() {\n\tadjustScale();\n}\n\nexport function resizeScreen() {\n\tadjustScale();\n}\n",
+				"value" : "1.00000 1.00000 1.00000"
+			},
+			"visible" : 
+			{
+				"user" : "show_title",
+				"value" : true
+			}
+		},
+		{
+			"angles" : "0.00000 -0.00000 0.00000",
+			"id" : 85,
+			"instanceoverride" : null,
+			"name" : "Title_Pixels",
+			"parent" : 106,
+			"particle" : "particles/Title_Pixels.json",
+			"scale" : "3.00000 3.00000 1.00000"
+		},
+		{
+			"angles" : "0.00000 -0.00000 3.14159",
+			"id" : 101,
+			"instanceoverride" : null,
+			"name" : "Title_Pixels",
+			"parent" : 106,
+			"particle" : "particles/Title_Pixels.json",
+			"scale" : "3.00000 3.00000 1.00000"
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"angles" : "0.00000 -0.00000 0.00000",
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 83,
+			"image" : "models/sTitle_0.json",
+			"name" : "sTitle_0",
+			"parallaxDepth" : "2.00000 2.00000",
+			"parent" : 106,
+			"scale" : "3.00000 3.00000 3.00000",
+			"size" : "692.00000 163.00000",
+			"solid" : true
+		},
+		{
+			"id" : 119,
+			"name" : "Planet Root",
+			"origin" : 
+			{
+				"script" : "'use strict';\nconst Helpers = shared.OMGHelpers;\n\nfunction adjustPosition() {\n\tthisLayer.origin = new Vec3(1920, shared.screenBoundsY.x + shared.planetHeight, 0);\n}\n\nexport function init() {\n\tadjustPosition();\n}\n\nexport function resizeScreen() {\n\tadjustPosition();\n}\n\nexport function applyUserProperties(changedUserProperties) {\n\tadjustPosition();\n}",
+				"value" : "1920.00000 -865.00000 0.00000"
+			}
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"angles" : 
+			{
+				"script" : "'use strict';\n\n/**\n * @param {Vec3} value - for property 'Angles'\n * @return {Vec3} - update current property value\n */\nexport function update(value) {\n\treturn value.add(new Vec3(0.0, 0.0, shared.planetSpeed * engine.frametime));\n}\n",
+				"value" : "0.00000 -0.00000 0.00000"
+			},
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"effects" : 
+			[
+				{
+					"file" : "effects/polar_transform/effect.json",
+					"id" : 47,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"constantshadervalues" : 
+							{
+								"UV Offset" : "0.00000 0.00000",
+								"UV Scale" : "-44 1.4"
+							},
+							"id" : 48
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 285,
+			"image" : "models/solid_instance_model_3258c799.json",
+			"instance" : 
+			{
+				"combos" : 
+				{
+					"version" : 2
+				},
+				"id" : 286,
+				"textures" : [ "sGroundStripRiskOfRain_0" ]
+			},
+			"name" : "Planet",
+			"parallaxDepth" : "-2.00000 -2.00000",
+			"parent" : 119,
+			"scale" : "10.00000 10.00000 11.00000",
+			"size" : "256.00000 256.00000",
+			"solid" : true
+		},
+		{
+			"alignment" : "bottom",
+			"alpha" : 1.0,
+			"angles" : "0.00000 -0.00000 0.00000",
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 72,
+			"image" : "models/sHuntressWalk_0.json",
+			"name" : "sHuntressWalk_0",
+			"origin" : "0.00000 1153.00000 0.00000",
+			"parent" : 119,
+			"scale" : "3.00000 3.00000 1.00000",
+			"size" : "22.00000 27.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"user" : 
+				{
+					"condition" : "huntress",
+					"name" : "character"
+				},
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "bottom",
+			"alpha" : 1.0,
+			"angles" : "0.00000 -0.00000 0.00000",
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 62,
+			"image" : "models/sCommandoWalk_0.json",
+			"name" : "sCommandoWalk_0",
+			"origin" : "0.00000 1153.00000 0.00000",
+			"parent" : 119,
+			"scale" : "3.00000 3.00000 3.00000",
+			"size" : "33.00000 30.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"user" : 
+				{
+					"condition" : "commando",
+					"name" : "character"
+				},
+				"value" : true
+			}
+		},
+		{
+			"alignment" : "bottom",
+			"alpha" : 1.0,
+			"angles" : "0.00000 -0.00000 0.00000",
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 118,
+			"image" : "models/sBoss4Walk_0.json",
+			"name" : "sBoss4Walk_0",
+			"origin" : "0.00000 1153.00000 0.00000",
+			"parent" : 119,
+			"scale" : "2.00000 2.00000 1.00000",
+			"size" : "68.00000 86.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"user" : 
+				{
+					"condition" : "providence",
+					"name" : "character"
+				},
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "bottom",
+			"alpha" : 1.0,
+			"angles" : "0.00000 -0.00000 0.00000",
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 122,
+			"image" : "models/sAcridWalk_0.json",
+			"name" : "sAcridWalk_0",
+			"origin" : "0.00000 1153.00000 0.00000",
+			"parent" : 119,
+			"scale" : "3.00000 3.00000 3.00000",
+			"size" : "71.00000 38.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"user" : 
+				{
+					"condition" : "acrid",
+					"name" : "character"
+				},
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "bottom",
+			"alpha" : 1.0,
+			"angles" : "0.00000 -0.00000 0.00000",
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"id" : 126,
+			"image" : "models/sPilotWalk_0.json",
+			"name" : "sPilotWalk_0",
+			"origin" : "0.00000 1153.00000 0.00000",
+			"parent" : 119,
+			"scale" : "3.00000 3.00000 1.00000",
+			"size" : "33.00000 27.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"user" : 
+				{
+					"condition" : "pilot",
+					"name" : "character"
+				},
+				"value" : false
+			}
+		},
+		{
+			"alignment" : "center",
+			"alpha" : 1.0,
+			"brightness" : 1.0,
+			"color" : "1.00000 1.00000 1.00000",
+			"colorBlendMode" : 0,
+			"copybackground" : true,
+			"effects" : 
+			[
+				{
+					"file" : "effects/workshop/2078835426/pixelate/effect.json",
+					"id" : 77,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"MULTIPLY" : 0
+							},
+							"constantshadervalues" : 
+							{
+								"new_resolution" : "1280 720",
+								"resolution_scale" : 0.5
+							},
+							"id" : 78
+						}
+					],
+					"visible" : 
+					{
+						"user" : "pixelate",
+						"value" : true
+					}
+				}
+			],
+			"id" : 74,
+			"image" : "models/util/fullscreenlayer.json",
+			"name" : "Post-Processing Layer",
+			"parallaxDepth" : "0.00000 0.00000",
+			"solid" : true
+		},
+		{
+			"id" : 146,
+			"maxtime" : 5.0,
+			"mintime" : 1.0,
+			"muteineditor" : true,
+			"name" : "musicTitle.ogg",
+			"playbackmode" : "loop",
+			"sound" : [ "sounds/musicTitle.ogg" ],
+			"startsilent" : false,
+			"volume" : 
+			{
+				"script" : "'use strict';\n\nconst title = \"musicTitle\"\nlet desiredVolume = 0.001;\nlet fadeRate = 2.0\n\n/**\n * @param {Number} value - for property 'volume'\n * @return {Number} - update current property value\n */\nexport function update(value) {\n\tif (desiredVolume > value) {\n\t\treturn Math.min(desiredVolume, value + fadeRate * engine.frametime);\n\t}\n\tif (desiredVolume < value) {\n\t\treturn Math.max(desiredVolume, value - fadeRate * engine.frametime);\n\t}\n}\n\n/**\n * @param {Object} changedUserProperties - only includes user properties that were recently changed!\n */\nexport function applyUserProperties(changedUserProperties) {\n\tif (changedUserProperties.music !== undefined) {\n\t\tif (changedUserProperties.music == title)\n\t\t\tdesiredVolume = 0.5;\n\t\telse\n\t\t\tdesiredVolume = 0.001;\n\t}\n}\n",
+				"value" : 0.001
+			}
+		},
+		{
+			"id" : 147,
+			"maxtime" : 5.0,
+			"mintime" : 1.0,
+			"muteineditor" : true,
+			"name" : "musicTitle2.ogg",
+			"playbackmode" : "loop",
+			"sound" : [ "sounds/musicTitle2.ogg" ],
+			"startsilent" : false,
+			"volume" : 
+			{
+				"script" : "'use strict';\n\nconst title = \"musicTitle2\"\nlet desiredVolume = 0.001;\nlet fadeRate = 2.0\n\n/**\n * @param {Number} value - for property 'volume'\n * @return {Number} - update current property value\n */\nexport function update(value) {\n\tif (desiredVolume > value) {\n\t\treturn Math.min(desiredVolume, value + fadeRate * engine.frametime);\n\t}\n\tif (desiredVolume < value) {\n\t\treturn Math.max(desiredVolume, value - fadeRate * engine.frametime);\n\t}\n}\n\n/**\n * @param {Object} changedUserProperties - only includes user properties that were recently changed!\n */\nexport function applyUserProperties(changedUserProperties) {\n\tif (changedUserProperties.music !== undefined) {\n\t\tif (changedUserProperties.music == title)\n\t\t\tdesiredVolume = 0.5;\n\t\telse\n\t\t\tdesiredVolume = 0.001;\n\t}\n}\n",
+				"value" : 0.001
+			}
+		}
+	],
+	"version" : 2
+}

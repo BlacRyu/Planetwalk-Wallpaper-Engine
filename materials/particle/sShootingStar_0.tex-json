@@ -1,0 +1,18 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sShootingStar_0.png",
+		"sShootingStar_1.png",
+		"sShootingStar_2.png",
+		"sShootingStar_3.png",
+		"sShootingStar_4.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

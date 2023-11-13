@@ -1,0 +1,19 @@
+{
+	"dependencies" : 
+	[
+		"materials/effects/polar_transform.json",
+		"shaders/effects/polar_transform.frag",
+		"shaders/effects/polar_transform.vert"
+	],
+	"editable" : true,
+	"group" : "localeffects",
+	"name" : "Polar Transform",
+	"passes" : 
+	[
+		{
+			"material" : "materials/effects/polar_transform.json"
+		}
+	],
+	"replacementkey" : "polar_transform",
+	"version" : 1
+}

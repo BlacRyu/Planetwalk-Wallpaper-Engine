@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.09,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sHuntressWalk_0.png",
+		"sHuntressWalk_1.png",
+		"sHuntressWalk_2.png",
+		"sHuntressWalk_3.png",
+		"sHuntressWalk_4.png",
+		"sHuntressWalk_5.png",
+		"sHuntressWalk_6.png",
+		"sHuntressWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

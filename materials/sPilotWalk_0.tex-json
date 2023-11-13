@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sPilotWalk_0.png",
+		"sPilotWalk_1.png",
+		"sPilotWalk_2.png",
+		"sPilotWalk_3.png",
+		"sPilotWalk_4.png",
+		"sPilotWalk_5.png",
+		"sPilotWalk_6.png",
+		"sPilotWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sBoss4Walk_0.png",
+		"sBoss4Walk_1.png",
+		"sBoss4Walk_2.png",
+		"sBoss4Walk_3.png",
+		"sBoss4Walk_4.png",
+		"sBoss4Walk_5.png",
+		"sBoss4Walk_6.png",
+		"sBoss4Walk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

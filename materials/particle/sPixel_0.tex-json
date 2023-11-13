@@ -1,0 +1,20 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.25,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sPixel_0.png",
+		"sPixel_1.png",
+		"sPixel_2.png",
+		"sPixel_3.png",
+		"sPixel_4.png",
+		"sPixel_5.png",
+		"sPixel_6.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

@@ -1,0 +1,22 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sAcridWalk_0.png",
+		"sAcridWalk_1.png",
+		"sAcridWalk_2.png",
+		"sAcridWalk_3.png",
+		"sAcridWalk_4.png",
+		"sAcridWalk_5.png",
+		"sAcridWalk_6.png",
+		"sAcridWalk_7.png",
+		"sAcridWalk_8.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

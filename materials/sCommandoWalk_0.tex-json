@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.09,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sCommandoWalk_0.png",
+		"sCommandoWalk_1.png",
+		"sCommandoWalk_2.png",
+		"sCommandoWalk_3.png",
+		"sCommandoWalk_4.png",
+		"sCommandoWalk_5.png",
+		"sCommandoWalk_6.png",
+		"sCommandoWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}
