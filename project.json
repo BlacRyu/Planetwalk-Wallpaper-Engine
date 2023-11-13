@@ -118,8 +118,12 @@
 	"preview" : "preview.gif",
 	"ratingsex" : "none",
 	"ratingviolence" : "none",
+	"snapshotformat" : 1,
+	"snapshotoverlay" : "",
 	"tags" : [ "Game" ],
 	"title" : "Planetwalk - Risk of Rain Returns",
 	"type" : "scene",
-	"version" : 0
+	"version" : 1,
+	"workshopid" : "3081779174",
+	"workshopurl" : "steam://url/CommunityFilePage/3081779174"
 }
