@@ -1,0 +1,27 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 5.0,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sGroundStripAncientValley1_0.png",
+		"sGroundStripAncientValley2_0.png",
+		"sGroundStripDampCaverns1_0.png",
+		"sGroundStripDampCaverns2_0.png",
+		"sGroundStripDesolateForest_0.png",
+		"sGroundStripDriedLake1_0.png",
+		"sGroundStripDriedLake2_0.png",
+		"sGroundStripHiveCluster_0.png",
+		"sGroundStripMagmaBarracks_0.png",
+		"sGroundStripRiskOfRain_0.png",
+		"sGroundStripSkyMeadow_0.png",
+		"sGroundStripSunkenTombs_0.png",
+		"sGroundStripTempleOfTheElders1_0.png",
+		"sGroundStripTempleOfTheElders2_0.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

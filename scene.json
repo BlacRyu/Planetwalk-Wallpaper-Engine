@@ -222,7 +222,7 @@
 			"solid" : true,
 			"visible" : 
 			{
-				"script" : "'use strict';\nconst Helpers = shared.OMGHelpers;\n\n/** How fast the background scrolls. */\nshared.bgSpeed = new Vec2(-0.003, 0.0);\n\n/** How fast the planet rotates. */\nshared.planetSpeed = 1.75;\n\n/** The vertical position of the planet's center */\nshared.planetHeight = -865\n\n/** Global scale multiplier for UI elements. */\nshared.ui_scale = 1;\n\n\n\n/** \n * Coordinates that correspond to the horizontal extents of the visible part of the wallpaper based on the current display's aspect ratio. \n * @type Vec2\n*/\nshared.screenBoundsX = undefined;\n/** \n * Canvas coordinates that correspond to the vertical extents of the visible part of the wallpaper based on the current display's aspect ratio. \n * @type Vec2\n*/\nshared.screenBoundsY = undefined;\n/** \n * Multiply scale by this value to make sure an object's pixel dimensions do not change when the screen dimensions change.\n * @type number\n */\nshared.canvasToScreen = undefined;\n\nfunction calculateCanvasBounds() {\n\tshared.canvasToScreen = Math.min(engine.canvasSize.x / engine.screenResolution.x, engine.canvasSize.y / engine.screenResolution.y);\n\t\n\tshared.zoom = engine.screenResolution.y < 800 || engine.screenResolution.x < 1200 ? 2 : 3;\n\n\tlet screenAspectRatio = engine.screenResolution.x / engine.screenResolution.y;\n\tlet canvasAspectRatio = engine.canvasSize.x / engine.canvasSize.y;\n\tif (screenAspectRatio > canvasAspectRatio) {\n\t\tlet height = engine.screenResolution.y * engine.canvasSize.x / engine.screenResolution.x;\n\t\tlet cornerOffset = (engine.canvasSize.y - height) / 2;\n\t\tshared.screenBoundsX = new Vec2(0, engine.canvasSize.x);\n\t\tshared.screenBoundsY = new Vec2(cornerOffset, engine.canvasSize.y - cornerOffset);\n\t}\n\telse {\n\t\tlet width = engine.screenResolution.x * engine.canvasSize.y / engine.screenResolution.y;\n\t\tlet cornerOffset = (engine.canvasSize.x - width) / 2;\n\t\tshared.screenBoundsX = new Vec2(cornerOffset, engine.canvasSize.x - cornerOffset);\n\t\tshared.screenBoundsY = new Vec2(0, engine.canvasSize.y);\n\t}\n}\n\nexport function init() {\n\tcalculateCanvasBounds();\n}\n\nexport function resizeScreen() {\n\tcalculateCanvasBounds();\n}\n\n\n/**\n * @param {Object} changedUserProperties - only includes user properties that were recently changed!\n */\nexport function applyUserProperties(changedUserProperties) {\n\tif (changedUserProperties.planet_height !== undefined) {\n\t\tshared.planetHeight = changedUserProperties.planet_height * 400.0 - 1265.0;\n\t}\n}\n",
+				"script" : "'use strict';\nconst Helpers = shared.OMGHelpers;\n\n/** Integer value representing the current planet biome. */\nconst BiomeType = {\n\tAncientValley : 0,\n\tAncientValleySnow : 1,\n\tDampCaverns : 2,\n\tDampCaverns2 : 3,\n\tDesolateForest : 4,\n\tDriedLake : 5,\n\tDriedLake2 : 6,\n\tHiveCluster : 7,\n\tMagmaBarracks : 8,\n\tRiskOfRain : 9,\n\tSkyMeadow : 10,\n\tSunkenTombs : 11,\n\tTempleOfTheElders : 12,\n\tTempleOfTheElders2 : 13,\n}\nshared.BiomeType = BiomeType;\n\n/** How fast the background scrolls. */\nshared.bgSpeed = new Vec2(-0.003, 0.0);\n\n/** The currently active biome. */\nshared.biome = BiomeType.RiskOfRain;\n\n/** How fast the planet rotates. */\nshared.planetSpeed = 1.75;\n\n/** The vertical position of the planet's center */\nshared.planetHeight = -865\n\n/** Global scale multiplier for UI elements. */\nshared.ui_scale = 1;\n\n\n\n/** \n * Coordinates that correspond to the horizontal extents of the visible part of the wallpaper based on the current display's aspect ratio. \n * @type Vec2\n*/\nshared.screenBoundsX = undefined;\n/** \n * Canvas coordinates that correspond to the vertical extents of the visible part of the wallpaper based on the current display's aspect ratio. \n * @type Vec2\n*/\nshared.screenBoundsY = undefined;\n/** \n * Multiply scale by this value to make sure an object's pixel dimensions do not change when the screen dimensions change.\n * @type number\n */\nshared.canvasToScreen = undefined;\n\nfunction calculateCanvasBounds() {\n\tshared.canvasToScreen = Math.min(engine.canvasSize.x / engine.screenResolution.x, engine.canvasSize.y / engine.screenResolution.y);\n\t\n\tshared.zoom = engine.screenResolution.y < 800 || engine.screenResolution.x < 1200 ? 2 : 3;\n\n\tlet screenAspectRatio = engine.screenResolution.x / engine.screenResolution.y;\n\tlet canvasAspectRatio = engine.canvasSize.x / engine.canvasSize.y;\n\tif (screenAspectRatio > canvasAspectRatio) {\n\t\tlet height = engine.screenResolution.y * engine.canvasSize.x / engine.screenResolution.x;\n\t\tlet cornerOffset = (engine.canvasSize.y - height) / 2;\n\t\tshared.screenBoundsX = new Vec2(0, engine.canvasSize.x);\n\t\tshared.screenBoundsY = new Vec2(cornerOffset, engine.canvasSize.y - cornerOffset);\n\t}\n\telse {\n\t\tlet width = engine.screenResolution.x * engine.canvasSize.y / engine.screenResolution.y;\n\t\tlet cornerOffset = (engine.canvasSize.x - width) / 2;\n\t\tshared.screenBoundsX = new Vec2(cornerOffset, engine.canvasSize.x - cornerOffset);\n\t\tshared.screenBoundsY = new Vec2(0, engine.canvasSize.y);\n\t}\n}\n\nexport function init() {\n\tcalculateCanvasBounds();\n}\n\nexport function resizeScreen() {\n\tcalculateCanvasBounds();\n}\n\n\n/**\n * @param {Object} changedUserProperties - only includes user properties that were recently changed!\n */\nexport function applyUserProperties(changedUserProperties) {\n\tif (changedUserProperties.planet_height !== undefined) {\n\t\tshared.planetHeight = changedUserProperties.planet_height * 400.0 - 1265.0;\n\t}\n\tif (changedUserProperties.biome !== undefined) {\n\t\tshared.biome = Number(changedUserProperties.biome);\n\t}\n}\n",
 				"value" : false
 			}
 		},
@@ -308,7 +308,7 @@
 			},
 			"scale" : 
 			{
-				"script" : "'use strict';\nconst Helpers = shared.OMGHelpers;\n\n/** The smallest width the viewport can be before we have to start shrinking the title. */\nconst minWidth = 1900;\n\nfunction adjustScale() {\n\tlet newWidth = Math.min(minWidth, shared.screenBoundsX.y - shared.screenBoundsX.x);\n\tthisLayer.scale = new Vec3(newWidth / minWidth);\n}\n\nexport function init() {\n\tadjustScale();\n}\n\nexport function resizeScreen() {\n\tadjustScale();\n}\n",
+				"script" : "'use strict';\nconst Helpers = shared.OMGHelpers;\n\n/** The smallest width the viewport can be before we have to start shrinking the title. */\nconst minWidth = 1900;\n\nlet userScale = 1.0;\n\nfunction adjustScale() {\n\tlet newWidth = Math.min(minWidth, shared.screenBoundsX.y - shared.screenBoundsX.x);\n\tthisLayer.scale = new Vec3(newWidth / minWidth * userScale);\n}\n\nexport function init() {\n\tadjustScale();\n}\n\nexport function resizeScreen() {\n\tadjustScale();\n}\n\n/**\n * @param {Object} changedUserProperties - only includes user properties that were recently changed!\n */\nexport function applyUserProperties(changedUserProperties) {\n\tif (changedUserProperties.title_size !== undefined) {\n\t\tuserScale = changedUserProperties.title_size;\n\t\tadjustScale();\n\t}\n}\n",
 				"value" : "1.00000 1.00000 1.00000"
 			},
 			"visible" : 
@@ -377,7 +377,7 @@
 			[
 				{
 					"file" : "effects/polar_transform/effect.json",
-					"id" : 47,
+					"id" : 132,
 					"name" : "",
 					"passes" : 
 					[
@@ -387,29 +387,24 @@
 								"UV Offset" : "0.00000 0.00000",
 								"UV Scale" : "-44 1.4"
 							},
-							"id" : 48
+							"id" : 0
 						}
 					],
 					"visible" : true
 				}
 			],
-			"id" : 285,
-			"image" : "models/solid_instance_model_3258c799.json",
-			"instance" : 
-			{
-				"combos" : 
-				{
-					"version" : 2
-				},
-				"id" : 286,
-				"textures" : [ "sGroundStripRiskOfRain_0" ]
-			},
-			"name" : "Planet",
-			"parallaxDepth" : "-2.00000 -2.00000",
+			"id" : 98,
+			"image" : "models/sGroundStripSpriteSheet.json",
+			"name" : "Planet SpriteSheet",
 			"parent" : 119,
-			"scale" : "10.00000 10.00000 11.00000",
-			"size" : "256.00000 256.00000",
-			"solid" : true
+			"scale" : "40.00000 6.51400 1.00000",
+			"size" : "64.00000 393.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"script" : "'use strict';\nconst Helpers = shared.OMGHelpers;\n\nexport function init() {\n\tthisLayer.getTextureAnimation().pause();\n\tthisLayer.getTextureAnimation().setFrame(shared.biome);\n}\n\n/**\n * @param {Object} changedUserProperties - only includes user properties that were recently changed!\n */\nexport function applyUserProperties(changedUserProperties) {\n\tthisLayer.getTextureAnimation().setFrame(shared.biome);\n}\n",
+				"value" : true
+			}
 		},
 		{
 			"alignment" : "bottom",

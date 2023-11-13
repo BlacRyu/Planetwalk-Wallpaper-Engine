@@ -1,2 +1,7 @@
 - Make planet texture swappable at runtime
-- Make character texture swappable at runtime
+- Add props to planets
+- Add more characters
+- Add some sort of interactive component(s)
+	- Clicking on planet surface creates a prop there?
+	- Clicking on sky creates a shooting star?
+- Allow for multiple characters, or just an 'All survivors' option.
