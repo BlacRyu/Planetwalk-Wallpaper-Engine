@@ -1,12 +1,39 @@
 {
 	"approved" : true,
 	"contentrating" : "Everyone",
-	"description" : "This is the title screen from Risk of Rain returns, rebuilt using Wallpaper Engine. There are a few customization options such as changing the character or playing music. I hope to add more content to this in the future.\n\n\nTags: Risk of Rain Returns Title Screen Titlescreen Retro Game Pixel Art Planet Space Stars Spin Blue Purple Calm Future RoR RoRR Planetwalk Walking",
+	"description" : "This is the title screen from Risk of Rain returns, rebuilt using Wallpaper Engine. There are a few customization options such as changing the character or playing music. I hope to add more content to this in the future.\r\n\r\n\r\n\r\n\r\n\r\nTags: Risk of Rain Returns Title Screen Titlescreen Retro Game Pixel Art Planet Space Stars Spin Blue Purple Calm Future RoR 1 One Remake Remaster Remade RoRR Planetwalk Walking",
 	"file" : "scene.json",
 	"general" : 
 	{
 		"properties" : 
 		{
+			"acrid" : 
+			{
+				"condition" : "coop.value == true",
+				"index" : 17,
+				"order" : 117,
+				"text" : "Acrid",
+				"type" : "bool",
+				"value" : true
+			},
+			"artificer" : 
+			{
+				"condition" : "coop.value == true",
+				"index" : 16,
+				"order" : 116,
+				"text" : "Artificer",
+				"type" : "bool",
+				"value" : false
+			},
+			"bandit" : 
+			{
+				"condition" : "coop.value == true",
+				"index" : 12,
+				"order" : 112,
+				"text" : "Bandit",
+				"type" : "bool",
+				"value" : false
+			},
 			"biome" : 
 			{
 				"index" : 1,
@@ -76,6 +103,7 @@
 			},
 			"character" : 
 			{
+				"condition" : "coop.value == false",
 				"index" : 0,
 				"options" : 
 				[
@@ -109,6 +137,50 @@
 				"type" : "combo",
 				"value" : "commando"
 			},
+			"commando" : 
+			{
+				"condition" : "coop.value == true",
+				"index" : 9,
+				"order" : 109,
+				"text" : "Commando",
+				"type" : "bool",
+				"value" : true
+			},
+			"coop" : 
+			{
+				"index" : 8,
+				"order" : 108,
+				"text" : "Enable Co-op",
+				"type" : "bool",
+				"value" : true
+			},
+			"enforcer" : 
+			{
+				"condition" : "coop.value == true",
+				"index" : 11,
+				"order" : 111,
+				"text" : "Enforcer",
+				"type" : "bool",
+				"value" : false
+			},
+			"huntress" : 
+			{
+				"condition" : "coop.value == true",
+				"index" : 10,
+				"order" : 110,
+				"text" : "Huntress",
+				"type" : "bool",
+				"value" : true
+			},
+			"loader" : 
+			{
+				"condition" : "coop.value == true",
+				"index" : 13,
+				"order" : 113,
+				"text" : "Loader",
+				"type" : "bool",
+				"value" : false
+			},
 			"music" : 
 			{
 				"index" : 6,
@@ -132,6 +204,15 @@
 				"type" : "combo",
 				"value" : "none"
 			},
+			"pilot" : 
+			{
+				"condition" : "coop.value == true",
+				"index" : 14,
+				"order" : 114,
+				"text" : "Pilot",
+				"type" : "bool",
+				"value" : false
+			},
 			"pixelate" : 
 			{
 				"index" : 7,
@@ -153,6 +234,15 @@
 				"type" : "slider",
 				"value" : 1
 			},
+			"providence" : 
+			{
+				"condition" : "coop.value === true",
+				"index" : 18,
+				"order" : 118,
+				"text" : "Providence",
+				"type" : "bool",
+				"value" : true
+			},
 			"schemecolor" : 
 			{
 				"order" : 0,
@@ -167,6 +257,15 @@
 				"text" : "Show title",
 				"type" : "bool",
 				"value" : true
+			},
+			"sniper" : 
+			{
+				"condition" : "coop.value == true",
+				"index" : 15,
+				"order" : 115,
+				"text" : "Sniper",
+				"type" : "bool",
+				"value" : false
 			},
 			"title_height" : 
 			{

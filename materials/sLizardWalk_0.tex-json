@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sLizardWalk_0.png",
+		"sLizardWalk_1.png",
+		"sLizardWalk_2.png",
+		"sLizardWalk_3.png",
+		"sLizardWalk_4.png",
+		"sLizardWalk_5.png",
+		"sLizardWalk_6.png",
+		"sLizardWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}
