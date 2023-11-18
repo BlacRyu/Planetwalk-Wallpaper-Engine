@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sMinerWalk_0.png",
+		"sMinerWalk_1.png",
+		"sMinerWalk_2.png",
+		"sMinerWalk_3.png",
+		"sMinerWalk_4.png",
+		"sMinerWalk_5.png",
+		"sMinerWalk_6.png",
+		"sMinerWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

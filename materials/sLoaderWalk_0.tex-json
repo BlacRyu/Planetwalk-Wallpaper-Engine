@@ -1,0 +1,23 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sLoaderWalk_0.png",
+		"sLoaderWalk_1.png",
+		"sLoaderWalk_2.png",
+		"sLoaderWalk_3.png",
+		"sLoaderWalk_4.png",
+		"sLoaderWalk_5.png",
+		"sLoaderWalk_6.png",
+		"sLoaderWalk_7.png",
+		"sLoaderWalk_8.png",
+		"sLoaderWalk_9.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

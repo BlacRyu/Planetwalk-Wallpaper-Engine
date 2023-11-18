@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sArtiWalk2_0.png",
+		"sArtiWalk2_1.png",
+		"sArtiWalk2_2.png",
+		"sArtiWalk2_3.png",
+		"sArtiWalk2_4.png",
+		"sArtiWalk2_5.png",
+		"sArtiWalk2_6.png",
+		"sArtiWalk2_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

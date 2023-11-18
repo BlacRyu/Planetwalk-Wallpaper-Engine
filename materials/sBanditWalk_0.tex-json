@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sBanditWalk_0.png",
+		"sBanditWalk_1.png",
+		"sBanditWalk_2.png",
+		"sBanditWalk_3.png",
+		"sBanditWalk_4.png",
+		"sBanditWalk_5.png",
+		"sBanditWalk_6.png",
+		"sBanditWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

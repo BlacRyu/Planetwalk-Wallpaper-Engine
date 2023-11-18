@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sMercenaryWalk_0.png",
+		"sMercenaryWalk_1.png",
+		"sMercenaryWalk_2.png",
+		"sMercenaryWalk_3.png",
+		"sMercenaryWalk_4.png",
+		"sMercenaryWalk_5.png",
+		"sMercenaryWalk_6.png",
+		"sMercenaryWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

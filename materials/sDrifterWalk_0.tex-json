@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sDrifterWalk_0.png",
+		"sDrifterWalk_1.png",
+		"sDrifterWalk_2.png",
+		"sDrifterWalk_3.png",
+		"sDrifterWalk_4.png",
+		"sDrifterWalk_5.png",
+		"sDrifterWalk_6.png",
+		"sDrifterWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

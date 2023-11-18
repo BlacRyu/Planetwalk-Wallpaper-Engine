@@ -1,0 +1,22 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sChefWalk_0.png",
+		"sChefWalk_1.png",
+		"sChefWalk_2.png",
+		"sChefWalk_3.png",
+		"sChefWalk_4.png",
+		"sChefWalk_5.png",
+		"sChefWalk_6.png",
+		"sChefWalk_7.png",
+		"sChefWalk_8.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

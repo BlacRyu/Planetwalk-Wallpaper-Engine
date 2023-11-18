@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sEnforcerWalk_1_0.png",
+		"sEnforcerWalk_1_1.png",
+		"sEnforcerWalk_1_2.png",
+		"sEnforcerWalk_1_3.png",
+		"sEnforcerWalk_1_4.png",
+		"sEnforcerWalk_1_5.png",
+		"sEnforcerWalk_1_6.png",
+		"sEnforcerWalk_1_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

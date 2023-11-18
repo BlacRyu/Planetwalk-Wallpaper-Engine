@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sHANDWalk_0.png",
+		"sHANDWalk_1.png",
+		"sHANDWalk_2.png",
+		"sHANDWalk_3.png",
+		"sHANDWalk_4.png",
+		"sHANDWalk_5.png",
+		"sHANDWalk_6.png",
+		"sHANDWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

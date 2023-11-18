@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sEngiWalk_0.png",
+		"sEngiWalk_1.png",
+		"sEngiWalk_2.png",
+		"sEngiWalk_3.png",
+		"sEngiWalk_4.png",
+		"sEngiWalk_5.png",
+		"sEngiWalk_6.png",
+		"sEngiWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

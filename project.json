@@ -10,11 +10,11 @@
 			"acrid" : 
 			{
 				"condition" : "coop.value == true",
-				"index" : 17,
-				"order" : 117,
+				"index" : 18,
+				"order" : 118,
 				"text" : "Acrid",
 				"type" : "bool",
-				"value" : true
+				"value" : false
 			},
 			"artificer" : 
 			{
@@ -32,7 +32,7 @@
 				"order" : 112,
 				"text" : "Bandit",
 				"type" : "bool",
-				"value" : false
+				"value" : true
 			},
 			"biome" : 
 			{
@@ -116,16 +116,64 @@
 						"value" : "huntress"
 					},
 					{
+						"label" : "Enforcer",
+						"value" : "enforcer"
+					},
+					{
+						"label" : "Bandit",
+						"value" : "bandit"
+					},
+					{
+						"label" : "Loader",
+						"value" : "loader"
+					},
+					{
 						"label" : "Pilot",
 						"value" : "pilot"
+					},
+					{
+						"label" : "Sniper",
+						"value" : "sniper"
+					},
+					{
+						"label" : "Artificer",
+						"value" : "artificer"
+					},
+					{
+						"label" : "Engineer",
+						"value" : "engineer"
 					},
 					{
 						"label" : "Acrid",
 						"value" : "acrid"
 					},
 					{
+						"label" : "Mercenary",
+						"value" : "mercenary"
+					},
+					{
+						"label" : "HAN-D",
+						"value" : "hand"
+					},
+					{
+						"label" : "Drifter",
+						"value" : "drifter"
+					},
+					{
+						"label" : "Chef",
+						"value" : "chef"
+					},
+					{
+						"label" : "Miner",
+						"value" : "miner"
+					},
+					{
 						"label" : "Providence",
 						"value" : "providence"
+					},
+					{
+						"label" : "Lemurian",
+						"value" : "lizard"
 					},
 					{
 						"label" : "None",
@@ -136,6 +184,15 @@
 				"text" : "Character",
 				"type" : "combo",
 				"value" : "commando"
+			},
+			"chef" : 
+			{
+				"condition" : "coop.value === true",
+				"index" : 22,
+				"order" : 122,
+				"text" : "Chef",
+				"type" : "bool",
+				"value" : false
 			},
 			"commando" : 
 			{
@@ -152,7 +209,16 @@
 				"order" : 108,
 				"text" : "Enable Co-op",
 				"type" : "bool",
-				"value" : true
+				"value" : false
+			},
+			"drifter" : 
+			{
+				"condition" : "coop.value === true",
+				"index" : 21,
+				"order" : 121,
+				"text" : "Drifter",
+				"type" : "bool",
+				"value" : false
 			},
 			"enforcer" : 
 			{
@@ -160,6 +226,24 @@
 				"index" : 11,
 				"order" : 111,
 				"text" : "Enforcer",
+				"type" : "bool",
+				"value" : true
+			},
+			"engineer" : 
+			{
+				"condition" : "coop.value === true",
+				"index" : 17,
+				"order" : 117,
+				"text" : "Engineer",
+				"type" : "bool",
+				"value" : false
+			},
+			"hand" : 
+			{
+				"condition" : "coop.value === true",
+				"index" : 20,
+				"order" : 120,
+				"text" : "HAN-D",
 				"type" : "bool",
 				"value" : false
 			},
@@ -172,12 +256,39 @@
 				"type" : "bool",
 				"value" : true
 			},
+			"lizard" : 
+			{
+				"condition" : "coop.value === true",
+				"index" : 25,
+				"order" : 125,
+				"text" : "Lemurian",
+				"type" : "bool",
+				"value" : false
+			},
 			"loader" : 
 			{
 				"condition" : "coop.value == true",
 				"index" : 13,
 				"order" : 113,
 				"text" : "Loader",
+				"type" : "bool",
+				"value" : false
+			},
+			"mercenary" : 
+			{
+				"condition" : "coop.value === true",
+				"index" : 19,
+				"order" : 119,
+				"text" : "Mercenary",
+				"type" : "bool",
+				"value" : false
+			},
+			"miner" : 
+			{
+				"condition" : "coop.value === true",
+				"index" : 23,
+				"order" : 123,
+				"text" : "Miner",
 				"type" : "bool",
 				"value" : false
 			},
@@ -213,13 +324,16 @@
 				"type" : "bool",
 				"value" : false
 			},
-			"pixelate" : 
+			"pixelscale" : 
 			{
+				"fraction" : false,
 				"index" : 7,
+				"max" : 4,
+				"min" : 1,
 				"order" : 107,
-				"text" : "Extra pixely",
-				"type" : "bool",
-				"value" : true
+				"text" : "Pixel Scale",
+				"type" : "slider",
+				"value" : 2
 			},
 			"planet_height" : 
 			{
@@ -237,11 +351,11 @@
 			"providence" : 
 			{
 				"condition" : "coop.value === true",
-				"index" : 18,
-				"order" : 118,
+				"index" : 24,
+				"order" : 124,
 				"text" : "Providence",
 				"type" : "bool",
-				"value" : true
+				"value" : false
 			},
 			"schemecolor" : 
 			{
@@ -303,7 +417,7 @@
 	"tags" : [ "Game" ],
 	"title" : "Planetwalk - Risk of Rain Returns",
 	"type" : "scene",
-	"version" : 4,
+	"version" : 5,
 	"visibility" : "public",
 	"workshopid" : "3081779174",
 	"workshopurl" : "steam://url/CommunityFilePage/3081779174"

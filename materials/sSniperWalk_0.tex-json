@@ -1,0 +1,21 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sSniperWalk_0.png",
+		"sSniperWalk_1.png",
+		"sSniperWalk_2.png",
+		"sSniperWalk_3.png",
+		"sSniperWalk_4.png",
+		"sSniperWalk_5.png",
+		"sSniperWalk_6.png",
+		"sSniperWalk_7.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}
