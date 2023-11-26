@@ -1,0 +1,19 @@
+{
+	"bleedtransparentcolors" : true,
+	"clampuvs" : true,
+	"format" : "rgba8888",
+	"frameduration" : 0.1,
+	"halfmip" : true,
+	"imagesequence" : 
+	[
+		"sRobomandoWalk_0.png",
+		"sRobomandoWalk_1.png",
+		"sRobomandoWalk_2.png",
+		"sRobomandoWalk_3.png",
+		"sRobomandoWalk_4.png",
+		"sRobomandoWalk_5.png"
+	],
+	"nointerpolation" : true,
+	"nomip" : true,
+	"nonpoweroftwo" : true
+}

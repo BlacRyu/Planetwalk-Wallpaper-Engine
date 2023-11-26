@@ -10,8 +10,8 @@
 			"acrid" : 
 			{
 				"condition" : "coop.value == true",
-				"index" : 18,
-				"order" : 118,
+				"index" : 17,
+				"order" : 117,
 				"text" : "Acrid",
 				"type" : "bool",
 				"value" : false
@@ -19,8 +19,8 @@
 			"artificer" : 
 			{
 				"condition" : "coop.value == true",
-				"index" : 16,
-				"order" : 116,
+				"index" : 22,
+				"order" : 122,
 				"text" : "Artificer",
 				"type" : "bool",
 				"value" : false
@@ -188,8 +188,8 @@
 			"chef" : 
 			{
 				"condition" : "coop.value === true",
-				"index" : 22,
-				"order" : 122,
+				"index" : 20,
+				"order" : 120,
 				"text" : "Chef",
 				"type" : "bool",
 				"value" : false
@@ -214,8 +214,8 @@
 			"drifter" : 
 			{
 				"condition" : "coop.value === true",
-				"index" : 21,
-				"order" : 121,
+				"index" : 23,
+				"order" : 123,
 				"text" : "Drifter",
 				"type" : "bool",
 				"value" : false
@@ -232,8 +232,8 @@
 			"engineer" : 
 			{
 				"condition" : "coop.value === true",
-				"index" : 17,
-				"order" : 117,
+				"index" : 14,
+				"order" : 114,
 				"text" : "Engineer",
 				"type" : "bool",
 				"value" : false
@@ -241,8 +241,8 @@
 			"hand" : 
 			{
 				"condition" : "coop.value === true",
-				"index" : 20,
-				"order" : 120,
+				"index" : 13,
+				"order" : 113,
 				"text" : "HAN-D",
 				"type" : "bool",
 				"value" : false
@@ -259,8 +259,8 @@
 			"lizard" : 
 			{
 				"condition" : "coop.value === true",
-				"index" : 25,
-				"order" : 125,
+				"index" : 26,
+				"order" : 126,
 				"text" : "Lemurian",
 				"type" : "bool",
 				"value" : false
@@ -268,8 +268,8 @@
 			"loader" : 
 			{
 				"condition" : "coop.value == true",
-				"index" : 13,
-				"order" : 113,
+				"index" : 19,
+				"order" : 119,
 				"text" : "Loader",
 				"type" : "bool",
 				"value" : false
@@ -277,8 +277,8 @@
 			"mercenary" : 
 			{
 				"condition" : "coop.value === true",
-				"index" : 19,
-				"order" : 119,
+				"index" : 18,
+				"order" : 118,
 				"text" : "Mercenary",
 				"type" : "bool",
 				"value" : false
@@ -286,8 +286,8 @@
 			"miner" : 
 			{
 				"condition" : "coop.value === true",
-				"index" : 23,
-				"order" : 123,
+				"index" : 15,
+				"order" : 115,
 				"text" : "Miner",
 				"type" : "bool",
 				"value" : false
@@ -318,8 +318,8 @@
 			"pilot" : 
 			{
 				"condition" : "coop.value == true",
-				"index" : 14,
-				"order" : 114,
+				"index" : 21,
+				"order" : 121,
 				"text" : "Pilot",
 				"type" : "bool",
 				"value" : false
@@ -351,9 +351,18 @@
 			"providence" : 
 			{
 				"condition" : "coop.value === true",
+				"index" : 25,
+				"order" : 125,
+				"text" : "Providence",
+				"type" : "bool",
+				"value" : false
+			},
+			"robomando" : 
+			{
+				"condition" : "coop.value === true",
 				"index" : 24,
 				"order" : 124,
-				"text" : "Providence",
+				"text" : "Robomando",
 				"type" : "bool",
 				"value" : false
 			},
@@ -375,8 +384,8 @@
 			"sniper" : 
 			{
 				"condition" : "coop.value == true",
-				"index" : 15,
-				"order" : 115,
+				"index" : 16,
+				"order" : 116,
 				"text" : "Sniper",
 				"type" : "bool",
 				"value" : false
@@ -416,7 +425,7 @@
 	"snapshotoverlay" : "",
 	"tags" : [ "Game" ],
 	"title" : "Planetwalk - Risk of Rain Returns",
-	"type" : "Scene",
+	"type" : "scene",
 	"version" : 6,
 	"visibility" : "public",
 	"workshopid" : "3081779174",
